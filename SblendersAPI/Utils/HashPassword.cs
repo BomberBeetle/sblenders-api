@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.IO;
 
+namespace SblendersAPI.Utils
+{
 
     class PasswordHasher
     {
@@ -17,3 +19,4 @@ using System.IO;
 
     }
 
+}

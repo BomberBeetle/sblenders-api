@@ -1,7 +1,10 @@
 ﻿-> Autenticação de Input em Todas as Coisas
 
 -> ClienteOnlineController
-	-> Put [BODY: nome, sobrenome, login (email), senha], cria agente+clienteOnline com o bit de verificação FALSE
+	-> Put: mandar o email, verificar se já existe
+
+-> VerificationEmailController
+	-> Post: mandar email dnv se ainda n foi mandado
 
 -> AutenticaClienteOnlineController
 	->Post: [controller/id/authUrl], flippa o bit de verificação da pessoa com este url

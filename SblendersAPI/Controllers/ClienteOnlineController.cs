@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using SblendersAPI.Models;
+using SblendersAPI.Utils;
 
 namespace SblendersAPI.Controllers
 {
@@ -94,9 +98,71 @@ namespace SblendersAPI.Controllers
 
 
         // PUT: api/ClienteOnline/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public Dictionary<string, object> Put([FromBody] string json)
         {
+
+            ClienteOnline newClient = JsonConvert.DeserializeObject<ClienteOnline>(json);
+
+            if (!EmailChecker.IsValidEmail(newClient.Login))
+            {
+                Response.StatusCode = StatusCodes.Status400BadRequest;
+                return new Dictionary<string, object> {
+                    {"error", "EMAIL_INVALID_ERROR" },
+                };
+            }
+
+            else if(newClient.Password.Length < 1){
+                return new Dictionary<string, object> {
+                    {"error", "PASS_TOO_SHORT_ERROR" },
+                };
+            }
+
+            else if (newClient.Nome.Length < 1)
+            {
+                return new Dictionary<string, object> {
+                    {"error", "NAME_TOO_SHORT_ERROR" },
+                };
+            }
+
+            else if (newClient.Sobrenome.Length < 1)
+            {
+                return new Dictionary<string, object> {
+                    {"error", "SURNAME_TOO_SHORT_ERROR" },
+                };
+            }
+
+            else
+            {
+                using (
+                    SqlConnection connection = new SqlConnection(string.Format("User ID={0}; Password={1}; Initial Catalog={2}; Persist Security Info=True;Data Source={3}", Program.dbLogin, Program.dbPass, "dbSblenders", Program.dbEnv))
+                )
+                using (
+                    SqlCommand insertAgentCommand = new SqlCommand("INSERT INTO tbAgente(tipoAgenteID, agenteLogin, agenteSenha) VALUES(1, @login, @pass) SELECT SCOPE_IDENTITY()", connection)
+                )
+                {
+                    insertAgentCommand.Parameters.Add(new SqlParameter("@login", newClient.Login));
+                    insertAgentCommand.Parameters.Add(new SqlParameter("@pass", PasswordHasher.Hash(newClient.Password, Program.hashSalt)));
+                    int agentID = (int)insertAgentCommand.ExecuteScalar();
+                    using (
+                    SqlCommand insertClientCommand = new SqlCommand("INSERT INTO tbClienteOnline(clienteOnlineNome, clienteOnlineSobrenome, clienteOnlineUrlVerifica, clienteOnlineVerificadoFlag, agenteID) VALUES(@name, @surname, @url, 0, @id) SELECT SCOPE_IDENTITY()", connection)
+                    )
+                    {
+                        int rowsAffected = insertClientCommand.ExecuteNonQuery();
+                        if(rowsAffected < 1)
+                        {
+                            Response.StatusCode = StatusCodes.Status500InternalServerError;
+                            return new Dictionary<string, object> { { "error", "INTERNAL_ERROR" } };
+                        }
+                        else
+                        {
+                            //mandar email
+                            return new Dictionary<string, object> { {"message","success" } };
+                        }
+                    }
+                }
+            }
+
         }
 
         // DELETE: api/ApiWithActions/5
@@ -104,5 +170,6 @@ namespace SblendersAPI.Controllers
         public void Delete(int id)
         {
         }
+
     }
 }
