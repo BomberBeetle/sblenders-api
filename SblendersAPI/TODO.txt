@@ -1,0 +1,26 @@
+﻿-> Autenticação de Input em Todas as Coisas
+
+-> ClienteOnlineController:
+	-> Get (id_do_agente_tentando_pegar/id_do_maninho) HEADERS:[Authorization: token do agente tentando pegar]
+	-> Put [BODY: nome, sobrenome, login (email), senha], cria agente+clienteOnline com o bit de verificação FALSE
+
+-> AutenticaClienteOnlineController
+	->Post: [controller/id/authUrl], flippa o bit de verificação da pessoa com este url
+	so isso kkkkkk
+
+-> AgenteController
+	-> Retorno do GET de funcionario
+	-> Retorno do GET de Totem
+
+-> ProdutosController
+	-> GET (index) com paginação
+	-> GET (per-id) que retorna os ingredientes disponiveis (array de id's [int])
+
+-> PedidosController
+	->PUT: Disponível para clientes, funcionarios e totems
+	->POST: Disponível para funcionarios para mudar o status do pedido
+	->GET (index) sem paginação para clientes (ver pedidos pessoais) e funcionarios (para ver os pedidos do restaurante)
+	->GET (per-id) para clientes e funcionarios, mesma coisa so que pra ver os detalhes do pedido (ingredientes, etc)
+
+-> IngredienteController
+	->GET (per-id) retorna as infos, aberto
