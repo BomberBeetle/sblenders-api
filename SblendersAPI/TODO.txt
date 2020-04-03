@@ -1,7 +1,6 @@
 ﻿-> Autenticação de Input em Todas as Coisas
 
--> ClienteOnlineController:
-	-> Get (id_do_agente_tentando_pegar/id_do_maninho) HEADERS:[Authorization: token do agente tentando pegar]
+-> ClienteOnlineController
 	-> Put [BODY: nome, sobrenome, login (email), senha], cria agente+clienteOnline com o bit de verificação FALSE
 
 -> AutenticaClienteOnlineController
@@ -11,6 +10,7 @@
 -> AgenteController
 	-> Retorno do GET de funcionario
 	-> Retorno do GET de Totem
+	-> DELETE {id} HEADER: token
 
 -> ProdutosController
 	-> GET (index) com paginação
