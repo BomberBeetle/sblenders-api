@@ -174,10 +174,8 @@ namespace SblendersAPI.Controllers
                         SqlCommand insertClientCommand = new SqlCommand("INSERT INTO tbClienteOnline(clienteOnlineNome, clienteOnlineSobrenome, clienteOnlineUrlVerifica, clienteOnlineVerificadoFlag, agenteID) VALUES(@name, @surname, @url, 0, @id)", connection)
                         )
                         {
-                            Random r = new Random();
-                            byte[] bytes = new byte[16];
-                            r.NextBytes(bytes);
-                            string url = BitConverter.ToString(bytes).Replace("-", "");
+                        string url = RandomGenerator.GenerateHexString(16);    
+
                             insertClientCommand.Parameters.Add(new SqlParameter("@name", newClient.Nome));
                             insertClientCommand.Parameters.Add(new SqlParameter("@surname", newClient.Sobrenome));
                             insertClientCommand.Parameters.Add(new SqlParameter("@url", url));

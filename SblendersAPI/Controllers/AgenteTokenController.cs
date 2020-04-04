@@ -60,11 +60,8 @@ namespace SblendersAPI.Controllers
                             }
                         }
                         using (SqlCommand tokenUpdateCommand = new SqlCommand("UPDATE tbAgente SET agenteToken = @newToken WHERE agenteID = @id;", connection))
-                        {  
-                            Random r = new Random();
-                            byte[] bytes = new byte[32];
-                            r.NextBytes(bytes);
-                            string newToken = BitConverter.ToString(bytes).Replace("-", "");
+                        {
+                            string newToken = RandomGenerator.GenerateHexString(32);               
 
                             tokenUpdateCommand.Parameters.Add(new SqlParameter("@newToken", newToken));
                             tokenUpdateCommand.Parameters.Add(new SqlParameter("@id", agenteID));

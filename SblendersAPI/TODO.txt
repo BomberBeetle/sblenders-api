@@ -6,10 +6,6 @@
 -> VerificationEmailController
 	-> Post: mandar email dnv se ainda n foi mandado
 
--> AutenticaClienteOnlineController
-	->Post: [controller/id/authUrl], flippa o bit de verificação da pessoa com este url
-	so isso kkkkkk
-
 -> AgenteController
 	-> Retorno do GET de funcionario
 	-> Retorno do GET de Totem
