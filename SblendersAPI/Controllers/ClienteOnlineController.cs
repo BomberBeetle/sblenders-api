@@ -38,7 +38,7 @@ namespace SblendersAPI.Controllers
 
                 userQueryCommand.Parameters.Add(new SqlParameter("@token", token));
                 userQueryCommand.Parameters.Add(new SqlParameter("@id", userid));
-
+                connection.Open();
                 using (SqlDataAdapter userQueryAdapter = new SqlDataAdapter(userQueryCommand))
                 {
                     DataTable userQuery = new DataTable();
@@ -99,10 +99,16 @@ namespace SblendersAPI.Controllers
 
         // PUT: api/ClienteOnline/5
         [HttpPut]
-        public Dictionary<string, object> Put([FromBody] string json)
+        public Dictionary<string, object> Put([FromBody] ClienteOnline newClient)
         {
-
-            ClienteOnline newClient = JsonConvert.DeserializeObject<ClienteOnline>(json);
+            
+            if(newClient.Login == null || newClient.Password == null || newClient.Nome == null || newClient.Sobrenome == null)
+            {
+                Response.StatusCode = StatusCodes.Status400BadRequest;
+                return new Dictionary<string, object> {
+                    {"error", "MALFORMED_REQUEST_ERROR" },
+                };
+            }
 
             if (!EmailChecker.IsValidEmail(newClient.Login))
             {
@@ -138,28 +144,59 @@ namespace SblendersAPI.Controllers
                     SqlConnection connection = new SqlConnection(string.Format("User ID={0}; Password={1}; Initial Catalog={2}; Persist Security Info=True;Data Source={3}", Program.dbLogin, Program.dbPass, "dbSblenders", Program.dbEnv))
                 )
                 using (
-                    SqlCommand insertAgentCommand = new SqlCommand("INSERT INTO tbAgente(tipoAgenteID, agenteLogin, agenteSenha) VALUES(1, @login, @pass) SELECT SCOPE_IDENTITY()", connection)
+                   SqlCommand insertAgentCommand = new SqlCommand("INSERT INTO tbAgente(tipoAgenteID, agenteLogin, agenteSenha) VALUES(1, @login, @pass) SELECT CAST(SCOPE_IDENTITY() AS INT)", connection)
                 )
                 {
                     insertAgentCommand.Parameters.Add(new SqlParameter("@login", newClient.Login));
                     insertAgentCommand.Parameters.Add(new SqlParameter("@pass", PasswordHasher.Hash(newClient.Password, Program.hashSalt)));
-                    int agentID = (int)insertAgentCommand.ExecuteScalar();
-                    using (
-                    SqlCommand insertClientCommand = new SqlCommand("INSERT INTO tbClienteOnline(clienteOnlineNome, clienteOnlineSobrenome, clienteOnlineUrlVerifica, clienteOnlineVerificadoFlag, agenteID) VALUES(@name, @surname, @url, 0, @id) SELECT SCOPE_IDENTITY()", connection)
-                    )
+                    connection.Open();
+                    int agentID;
+                    try
                     {
-                        int rowsAffected = insertClientCommand.ExecuteNonQuery();
-                        if(rowsAffected < 1)
+                        agentID = (int)insertAgentCommand.ExecuteScalar();
+                    }
+
+                    catch (SqlException ex)
+                    {
+                        if (ex.Number == 2601 || ex.Number == 2627) //ver se é unique violation
+                        {
+                            Response.StatusCode = StatusCodes.Status400BadRequest;
+                            return new Dictionary<string, object> { { "error", "LOGIN_ALREADY_EXISTS_ERROR" } };
+                        }
+                        else
                         {
                             Response.StatusCode = StatusCodes.Status500InternalServerError;
                             return new Dictionary<string, object> { { "error", "INTERNAL_ERROR" } };
                         }
-                        else
-                        {
-                            //mandar email
-                            return new Dictionary<string, object> { {"message","success" } };
-                        }
                     }
+
+                    using (
+                        SqlCommand insertClientCommand = new SqlCommand("INSERT INTO tbClienteOnline(clienteOnlineNome, clienteOnlineSobrenome, clienteOnlineUrlVerifica, clienteOnlineVerificadoFlag, agenteID) VALUES(@name, @surname, @url, 0, @id)", connection)
+                        )
+                        {
+                            Random r = new Random();
+                            byte[] bytes = new byte[16];
+                            r.NextBytes(bytes);
+                            string url = BitConverter.ToString(bytes).Replace("-", "");
+                            insertClientCommand.Parameters.Add(new SqlParameter("@name", newClient.Nome));
+                            insertClientCommand.Parameters.Add(new SqlParameter("@surname", newClient.Sobrenome));
+                            insertClientCommand.Parameters.Add(new SqlParameter("@url", url));
+                            insertClientCommand.Parameters.Add(new SqlParameter("@id", agentID));
+
+                            int rowsAffected = insertClientCommand.ExecuteNonQuery();
+                            if (rowsAffected < 1)
+                            {
+                                Response.StatusCode = StatusCodes.Status500InternalServerError;
+                                return new Dictionary<string, object> { { "error", "INTERNAL_ERROR" } };
+                            }
+                            else
+                            {
+                                //mandar email aqui
+                                return new Dictionary<string, object> { { "message", "SUCCESS" } };
+                            }
+                        }
+                    
+                    
                 }
             }
 
