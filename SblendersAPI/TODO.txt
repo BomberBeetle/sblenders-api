@@ -7,7 +7,6 @@
 	-> Post: mandar email dnv se ainda n foi mandado
 
 -> AgenteController
-	-> Retorno do GET de funcionario
 	-> Retorno do GET de Totem
 
 -> ProdutosController

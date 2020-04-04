@@ -64,6 +64,20 @@ namespace SblendersAPI.Controllers
                     else if ((int)agenteQuery.Rows[0]["tipoAgenteID"] == 2)
                     {
                         //Funcionario
+                        using (SqlCommand funcionarioQueryCommand = new SqlCommand("SELECT restauranteID, tipoFuncionarioID, nomeFuncionario, idFuncionario FROM tbFuncionario where agenteID = @id", connection))
+
+                        using (SqlDataAdapter funcionarioQueryAdapter = new SqlDataAdapter(funcionarioQueryCommand))
+                        {
+                            funcionarioQueryCommand.Parameters.Add(new SqlParameter("@id", id));
+                            DataTable funcionarioQuery = new DataTable();
+                            funcionarioQueryAdapter.Fill(funcionarioQuery);
+                            return new Dictionary<string, string> {
+                                { "restaurant_id", funcionarioQuery.Rows[0]["restauranteID"].ToString()},
+                                { "emp_type_id", funcionarioQuery.Rows[0]["tipoFuncionarioID"].ToString() },
+                                { "emp_name", funcionarioQuery.Rows[0]["nomeFuncionario"].ToString()},
+                                {"emp_id",  funcionarioQuery.Rows[0]["idFuncionario"].ToString() }
+                            };
+                        }
                     }
                     else if ((int)agenteQuery.Rows[0]["tipoAgenteID"] == 3)
                     {
@@ -78,25 +92,6 @@ namespace SblendersAPI.Controllers
 
             Response.StatusCode = 500;
             return new Dictionary<string, string> { {"error", "SERVICE_NOT_AVAIBLE" } };
-        }
-
-        // POST: api/Agente
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT: api/Agente/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
     }
 }
