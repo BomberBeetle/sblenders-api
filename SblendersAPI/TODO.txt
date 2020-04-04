@@ -1,7 +1,7 @@
 ﻿-> Autenticação de Input em Todas as Coisas
 
 -> ClienteOnlineController
-	-> Put: mandar o email, verificar se já existe
+	-> Put: mandar o email
 
 -> VerificationEmailController
 	-> Post: mandar email dnv se ainda n foi mandado
@@ -13,7 +13,6 @@
 -> AgenteController
 	-> Retorno do GET de funcionario
 	-> Retorno do GET de Totem
-	-> DELETE {id} HEADER: token
 
 -> ProdutosController
 	-> GET (index) com paginação

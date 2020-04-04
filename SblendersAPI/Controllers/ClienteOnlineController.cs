@@ -206,7 +206,41 @@ namespace SblendersAPI.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-        }
+            using (
+              SqlConnection connection = new SqlConnection(string.Format(
+                  "User ID={0}; Password={1}; Initial Catalog={2}; Persist Security Info=True;Data Source={3}"
+                  , Program.dbLogin, Program.dbPass, "dbSblenders", Program.dbEnv))
+              )
 
+            using (
+                SqlCommand deleteClientCommand = new SqlCommand(
+                    "DELETE FROM tbClienteOnline WHERE agenteID = @id AND agenteToken = @token"
+                    , connection)
+            )
+            {
+                deleteClientCommand.Parameters.Add(new SqlParameter("@id", id));
+                deleteClientCommand.Parameters.Add(new SqlParameter("@token", Request.Headers["Authorization"].ToString()));
+                connection.Open();
+                int rowsAffected = deleteClientCommand.ExecuteNonQuery();
+                if(rowsAffected < 1)
+                {
+                    Response.StatusCode = StatusCodes.Status403Forbidden;
+                    return;
+                }
+                else
+                {
+                    using (
+                SqlCommand deleteAgentCommand = new SqlCommand(
+                    "DELETE FROM tbAgente WHERE agenteID = @id AND agenteToken = @token"
+                    , connection)
+                    )
+                    {
+                        deleteAgentCommand.Parameters.Add(new SqlParameter("@id", id));
+                        deleteAgentCommand.Parameters.Add(new SqlParameter("@token", Request.Headers["Authorization"].ToString()));
+                        deleteAgentCommand.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
     }
 }
