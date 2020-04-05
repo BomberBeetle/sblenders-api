@@ -82,6 +82,19 @@ namespace SblendersAPI.Controllers
                     else if ((int)agenteQuery.Rows[0]["tipoAgenteID"] == 3)
                     {
                         //ThotEm
+                        using (SqlCommand totemRestauranteQueryCommand = new SqlCommand("SELECT totemID, restauranteID FROM tbTotem where agenteID = @id", connection))
+                        {
+                            totemRestauranteQueryCommand.Parameters.Add(new SqlParameter("@id", id));
+                            using (SqlDataAdapter totemAdapter = new SqlDataAdapter(totemRestauranteQueryCommand))
+                            {
+                                DataTable dt = new DataTable();
+                                totemAdapter.Fill(dt);
+                                return new Dictionary<string, string> {
+                                { "restaurant_id", dt.Rows[0]["restauranteID"].ToString()},
+                                { "totem_id", dt.Rows[0]["totemID"].ToString()},
+                            };
+                            }
+                        }
                     }
                 }
                 catch(Exception e)

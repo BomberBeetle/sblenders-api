@@ -6,9 +6,6 @@
 -> VerificationEmailController
 	-> Post: mandar email dnv se ainda n foi mandado
 
--> AgenteController
-	-> Retorno do GET de Totem
-
 -> ProdutosController
 	-> GET (index) com paginação
 	-> GET (per-id) que retorna os ingredientes disponiveis (array de id's [int])
@@ -23,3 +20,7 @@
 
 -> IngredienteController
 	->GET (per-id) retorna as infos, aberto
+
+-> RestauranteController
+	->GET (per-id) retorna os detalhes de um restaurante
+	->GET (range) retorna os restaurantes na distancia especificada
