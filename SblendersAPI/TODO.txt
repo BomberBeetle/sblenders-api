@@ -11,6 +11,9 @@
 	-> GET (per-id) que retorna os ingredientes disponiveis (array de id's [int])
 	-> GET (nome) retorna produtos contendo nome
 
+-> ProdutosFotoController
+	-> Get (per-id) retorna a foto, aberto
+
 -> PedidosController
 	->PUT: Disponível para clientes, funcionarios e totems
 	->POST: Disponível para funcionarios para mudar o status do pedido
@@ -20,6 +23,9 @@
 
 -> IngredienteController
 	->GET (per-id) retorna as infos, aberto
+
+-> IngredienteFotoController
+	-> Get (per-id) retorna a foto, aberto
 
 -> RestauranteController
 	->GET (per-id) retorna os detalhes de um restaurante
