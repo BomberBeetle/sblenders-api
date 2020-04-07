@@ -6,9 +6,6 @@
 -> VerificationEmailController
 	-> Post: mandar email dnv se ainda n foi mandado
 
--> ProdutosController
-	-> GET (per-id) que retorna os ingredientes disponiveis (array de id's [int]) e detalhes
-
 -> PedidosController
 	->PUT: Disponível para clientes, funcionarios e totems
 	->POST: Disponível para funcionarios para mudar o status do pedido

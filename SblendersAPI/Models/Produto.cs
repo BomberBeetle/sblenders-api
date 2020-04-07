@@ -10,12 +10,16 @@ namespace SblendersAPI.Models
         public int ID;
         public decimal Cost;
         public string Name;
-        
-        public Produto(int ID, decimal Cost, string Name)
+        public string Desc;
+        public ProdutoIngrediente[] ingredientes;
+
+        public Produto(int iD, decimal cost, string name, string desc, ProdutoIngrediente[] ingredientes)
         {
-            this.ID = ID;
-            this.Cost = Cost;
-            this.Name = Name;
+            ID = iD;
+            Cost = cost;
+            Name = name;
+            Desc = desc;
+            this.ingredientes = ingredientes;
         }
     }
 }

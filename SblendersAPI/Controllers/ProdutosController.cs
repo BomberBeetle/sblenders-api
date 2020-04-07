@@ -16,7 +16,7 @@ namespace SblendersAPI.Controllers
     {
         // GET: api/Produtos
         [HttpGet]
-        public IEnumerable<Produto> Get()
+        public IEnumerable<ProdutoParcial> Get()
         {
             int page = 1;
             int itemCount = 20;
@@ -86,7 +86,7 @@ namespace SblendersAPI.Controllers
               SqlConnection connection = new SqlConnection(string.Format("User ID={0}; Password={1}; Initial Catalog={2}; Persist Security Info=True;Data Source={3}", Program.dbLogin, Program.dbPass, "dbSblenders", Program.dbEnv))
               )
             using (
-                SqlCommand produtosQueryCommand = new SqlCommand($"SELECT produtoID, produtoNome, produtoCusto FROM tbPedido WHERE {(filterByCategory ? "categoriaID = @cat" : "1=1")} AND {(filterByCategory ? $"produtoNome LIKE '%@query%'" : "1=1")} ORDER BY {sortString} OFFSET @offset ROWS FETCH NEXT @itemCount ROWS ONLY;", connection)
+                SqlCommand produtosQueryCommand = new SqlCommand($"SELECT produtoID, produtoNome, produtoCusto FROM tbProduto WHERE {(filterByCategory ? "categoriaID = @cat" : "1=1")} AND {(filterByCategory ? $"produtoNome LIKE '%@query%'" : "1=1")} ORDER BY {sortString} OFFSET @offset ROWS FETCH NEXT @itemCount ROWS ONLY;", connection)
             )
             {
                 produtosQueryCommand.Parameters.Add(new SqlParameter("@cat", category));
@@ -98,10 +98,10 @@ namespace SblendersAPI.Controllers
                     connection.Open();
                     DataTable dataTable = new DataTable();
                     adapter.Fill(dataTable);
-                    List<Produto> produtos = new List<Produto>();
+                    List<ProdutoParcial> produtos = new List<ProdutoParcial>();
                     foreach(DataRow r in dataTable.Rows)
                     {
-                        var p = new Produto((int)r["produtoID"], (decimal)r["produtoNome"], (string)r["produtoCusto"]);
+                        var p = new ProdutoParcial((int)r["produtoID"], (decimal)r["produtoNome"], (string)r["produtoCusto"]);
                         produtos.Add(p);
                     }
                     return produtos;
@@ -111,9 +111,58 @@ namespace SblendersAPI.Controllers
 
         // GET: api/Produtos/5
         [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        public Produto Get(int id)
         {
-            return "value";
+            using (
+              SqlConnection connection = new SqlConnection(string.Format("User ID={0}; Password={1}; Initial Catalog={2}; Persist Security Info=True;Data Source={3}", Program.dbLogin, Program.dbPass, "dbSblenders", Program.dbEnv))
+            )
+            using (
+                SqlCommand produtoQueryCommand = new SqlCommand("SELECT produtoID, produtoNome, produtoCusto, produtoDesc FROM tbProduto WHERE produtoID = @id", connection)
+            )
+            {
+                produtoQueryCommand.Parameters.Add(new SqlParameter("@id", id));
+                using (SqlDataAdapter productAdapter = new SqlDataAdapter(produtoQueryCommand))
+                {
+                    DataTable product = new DataTable();
+                    connection.Open();
+                    productAdapter.Fill(product);
+                    if (product.Rows.Count < 1)
+                    {
+                        Response.StatusCode = StatusCodes.Status400BadRequest;
+                        return null;
+                    }
+                    else
+                    {
+                        using (
+                        SqlCommand produtoIngQueryCommand = new SqlCommand("SELECT tbIngrediente.ingredienteID, ingredienteNome, ingredienteCusto, novoPreco, ingredienteDesc FROM tbProdutoIngrediente INNER JOIN tbIngrediente ON tbIngrediente.ingredienteID = tbProdutoIngrediente.ingredienteID WHERE tbProdutoIngrediente.produtoID = @id", connection)
+                        )
+                        {
+                            DataTable ingredients = new DataTable();
+                            using (SqlDataAdapter ingredientsAdapter = new SqlDataAdapter(produtoIngQueryCommand))
+                            {
+                                ingredientsAdapter.Fill(ingredients);
+                                List<ProdutoIngrediente> ingList = new List<ProdutoIngrediente>();
+                                foreach(DataRow r in ingredients.Rows)
+                                {
+                                    decimal preco;
+                                    if(r["novoPreco"] == DBNull.Value)
+                                    {
+                                        preco = (decimal)r["ingredienteCusto"];
+                                    }
+                                    else
+                                    {
+                                        preco = (decimal)r["novoPreco"];
+                                    }
+                                    ProdutoIngrediente ingrediente = new ProdutoIngrediente((int)r["quantidadePadrao"], (int)r["ingredienteID"], preco, (string)r["ingredienteNome"], (string)r["ingredienteDesc"]);
+                                    ingList.Add(ingrediente);
+                                }
+                                Produto produto = new Produto(id, (decimal)product.Rows[0]["produtoCusto"], product.Rows[0]["produtoNome"].ToString(), product.Rows[0]["produtoDesc"].ToString(),ingList.ToArray());
+                                return produto;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         // POST: api/Produtos
