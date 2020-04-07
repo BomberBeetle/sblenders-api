@@ -9,12 +9,6 @@
 -> ProdutosController
 	-> GET (per-id) que retorna os ingredientes disponiveis (array de id's [int]) e detalhes
 
--> ProdutosFotoController
-	-> Get (per-id) retorna a foto, aberto
-
--> ProdutosFotoController
-	-> Get (per-id) retorna a foto, aberto
-
 -> PedidosController
 	->PUT: Disponível para clientes, funcionarios e totems
 	->POST: Disponível para funcionarios para mudar o status do pedido

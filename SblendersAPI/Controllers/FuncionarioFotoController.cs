@@ -36,6 +36,7 @@ namespace SblendersAPI.Controllers
                 SqlCommand selectEmpPhotoCommand = new SqlCommand("SELECT funcionarioFoto FROM tbFuncionario WHERE agentID = @id", connection)
                  )
                 {
+                    selectEmpPhotoCommand.Parameters.Add(new SqlParameter("@id", id));
                     byte[] photoFile = (byte[])selectEmpPhotoCommand.ExecuteScalar();
                     HttpResponseMessage responseMessage = new HttpResponseMessage();
                     responseMessage.Content = new ByteArrayContent(photoFile);
