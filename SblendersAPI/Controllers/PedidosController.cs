@@ -40,7 +40,7 @@ namespace SblendersAPI.Controllers
         {
             DataTable agentData = new DataTable();
             int restaurantID = 0;
-            int pedidoID = 0;
+            int? pedidoID = null;
             using (
               SqlConnection connection = new SqlConnection(string.Format("User ID={0}; Password={1}; Initial Catalog={2}; Persist Security Info=True;Data Source={3}", Program.dbLogin, Program.dbPass, "dbSblenders", Program.dbEnv))
               )
@@ -54,15 +54,13 @@ namespace SblendersAPI.Controllers
                     agenteQueryCommand.Parameters.Add(new SqlParameter("@token", Request.Headers["Authorization"].ToString()));
                     connection.Open();
                     int? agentType = (int?)agenteQueryCommand.ExecuteScalar();
-                    connection.Close();
                     if(agentType == null)
                     {
                         Response.StatusCode = StatusCodes.Status403Forbidden;
                         return;
                     }
                 }
-                try
-                {
+                
                     using (
                         SqlCommand insertPedidoCommand = new SqlCommand("INSERT INTO tbPedido(restauranteID, agenteID, enderecoEntrega, dataHoraPedido, estadoPedidoID) VALUES(@restID, @agID, @endereco, @datahora, 0) SELECT CAST(SCOPE_IDENTITY() AS INT)", connection)
                     )
@@ -71,27 +69,43 @@ namespace SblendersAPI.Controllers
                         insertPedidoCommand.Parameters.Add(new SqlParameter("@agID", pedido.agenteID));
                         insertPedidoCommand.Parameters.Add(new SqlParameter("@endereco", pedido.endereco));
                         insertPedidoCommand.Parameters.Add(new SqlParameter("@datahora", pedido.dataHoraPedido));
-                        connection.Open();
-                        int rowsAffected = insertPedidoCommand.ExecuteNonQuery();
-                        connection.Close();
-                        if(rowsAffected != 1) {
+                        pedidoID = (int?)insertPedidoCommand.ExecuteScalar();
+                        if(pedidoID != 1) {
                             Response.StatusCode = StatusCodes.Status500InternalServerError;
                             return;
                         }
                     }
-                    foreach(PedidoProduto produto in pedido.produtos)
+                try
+                {
+                    foreach (PedidoProduto produto in pedido.produtos)
                     {
+                        int pedProdID;
                         using (
-                            SqlCommand insertProdutoCommand = new SqlCommand("INSERT INTO tbPedido(restauranteID, agenteID, enderecoEntrega, dataHoraPedido, estadoPedidoID) VALUES(@restID, @agID, @endereco, @datahora, 0) SELECT CAST(SCOPE_IDENTITY() AS INT)", connection)
+                            SqlCommand insertProdutoCommand = new SqlCommand("INSERT INTO tbPedidoProduto(pedidoID, produtoID, pedidoProdutoQtde) VALUES(@pedID, @prodID, @qtde) SELECT CAST(SCOPE_IDENTITY() AS INT)", connection)
                         )
                         {
-                            //Falta: inserir produtos e ingredientes e Revert em caso de erro
+                            insertProdutoCommand.Parameters.Add(new SqlParameter("@pedID", pedidoID));
+                            insertProdutoCommand.Parameters.Add(new SqlParameter("@prodID", produto.produtoID));
+                            insertProdutoCommand.Parameters.Add(new SqlParameter("@qtde", produto.pedidoProdutoQtde));
+                             pedProdID = (int)insertProdutoCommand.ExecuteScalar();
+                        }
+                        foreach (PedidoProdutoIngrediente ingrediente in produto.ingredientes)
+                        {
+                            using (
+                                SqlCommand insertIngredienteCommand = new SqlCommand("INSERT INTO tbPedidoProdutoIngrediente(pedidoProdutoID, produtoIngredienteID, quantidadeIngrediente) VALUES(@ppID, @piID, @qtde) SELECT CAST(SCOPE_IDENTITY() AS INT)", connection)
+                            )
+                            {
+                                insertIngredienteCommand.Parameters.Add(new SqlParameter("@ppID", pedProdID));
+                                insertIngredienteCommand.Parameters.Add(new SqlParameter("@piID",ingrediente.ProdutoIngredienteID));
+                                insertIngredienteCommand.Parameters.Add(new SqlParameter("@ppID", ingrediente.Quantidade));
+                                insertIngredienteCommand.ExecuteNonQuery();
+                            }
                         }
                     }
                 }
                 catch
                 {
-                    RevertPedido(pedidoID);
+                    RevertPedido(pedidoID.Value);
                 }
             }
         }
