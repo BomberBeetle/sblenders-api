@@ -8,12 +8,7 @@
 
 -> PedidosController
 	->POST: Disponível para funcionarios para mudar o status do pedido
-	->GET (index) sem paginação para clientes (ver pedidos pessoais) e funcionarios (para ver os pedidos do restaurante)
 	->GET (per-id) para clientes e funcionarios, mesma coisa so que pra ver os detalhes do pedido (ingredientes, etc)
-	
-
--> IngredienteController
-	->GET (per-id) retorna as infos, aberto
 
 -> IngredienteFotoController
 	-> Get (per-id) retorna a foto, aberto

@@ -134,7 +134,7 @@ namespace SblendersAPI.Controllers
                     else
                     {
                         using (
-                        SqlCommand produtoIngQueryCommand = new SqlCommand("SELECT tbIngrediente.ingredienteID, ingredienteNome, ingredienteCusto, novoPreco, ingredienteDesc FROM tbProdutoIngrediente INNER JOIN tbIngrediente ON tbIngrediente.ingredienteID = tbProdutoIngrediente.ingredienteID WHERE tbProdutoIngrediente.produtoID = @id", connection)
+                        SqlCommand produtoIngQueryCommand = new SqlCommand("SELECT tbIngrediente.ingredienteID, ingredienteNome, produtoIngredienteID, ingredienteCusto, novoPreco, ingredienteDesc FROM tbProdutoIngrediente INNER JOIN tbIngrediente ON tbIngrediente.ingredienteID = tbProdutoIngrediente.ingredienteID WHERE tbProdutoIngrediente.produtoID = @id", connection)
                         )
                         {
                             DataTable ingredients = new DataTable();
@@ -153,7 +153,7 @@ namespace SblendersAPI.Controllers
                                     {
                                         preco = (decimal)r["novoPreco"];
                                     }
-                                    ProdutoIngrediente ingrediente = new ProdutoIngrediente((int)r["quantidadePadrao"], (int)r["ingredienteID"], preco, (string)r["ingredienteNome"], (string)r["ingredienteDesc"]);
+                                    ProdutoIngrediente ingrediente = new ProdutoIngrediente((int)r["quantidadePadrao"], (int)r["ingredienteID"], preco, (string)r["ingredienteNome"], (string)r["ingredienteDesc"], (int)r["produtoIngredienteID"]);
                                     ingList.Add(ingrediente);
                                 }
                                 Produto produto = new Produto(id, (decimal)product.Rows[0]["produtoCusto"], product.Rows[0]["produtoNome"].ToString(), product.Rows[0]["produtoDesc"].ToString(),ingList.ToArray());

@@ -15,18 +15,95 @@ namespace SblendersAPI.Controllers
     public class PedidosController : ControllerBase
     {
         // GET: api/Pedidos
-        [HttpGet]
-        public IEnumerable<string> Get()
+        [HttpGet("{agent_id}", Name = "IndexPedidos")]
+        public IEnumerable<Dictionary<string, string>> Get(int agent_id)
         {
-            return new string[] { "value1", "value2" };
+            using (
+              SqlConnection connection = new SqlConnection(string.Format("User ID={0}; Password={1}; Initial Catalog={2}; Persist Security Info=True;Data Source={3}", Program.dbLogin, Program.dbPass, "dbSblenders", Program.dbEnv))
+              )
+            {
+                int agentType;
+                int? restauranteID;
+                using (
+                    SqlCommand agenteQueryCommand = new SqlCommand("SELECT tipoAgenteID, restauranteID FROM tbAgente WHERE agenteToken = @token AND agenteID = @id LEFT OUTER JOIN tbClienteOnline ON tbClienteOnline.agenteID = tbAgente.agenteID LEFT OUTER JOIN tbFuncionario ON tbFuncionario.agenteID = tbAgente.agenteID;", connection)
+                )
+                {
+                    agenteQueryCommand.Parameters.Add(new SqlParameter("@id", agent_id));
+                    agenteQueryCommand.Parameters.Add(new SqlParameter("@token", Request.Headers["Authorization"].ToString()));
+                    connection.Open();
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(agenteQueryCommand))
+                    {
+                        DataTable t = new DataTable();
+                        adapter.Fill(t);
+                        if (t.Rows.Count < 1)
+                        {
+                            Response.StatusCode = StatusCodes.Status403Forbidden;
+                            return new Dictionary<string, string>[0];
+                        }
+                        agentType = (int)t.Rows[0]["tipoAgenteID"];
+                        restauranteID = (int)t.Rows[0]["restauranteID"];
+                    }
+                }
+                if (agentType == 1)
+                {
+                    //ClienteOnline
+                    using (
+                    SqlCommand pedidosQueryCommand = new SqlCommand("SELECT pedidoID, pedidoDataHora FROM tbPedido WHERE agenteID = @id", connection)
+                    )
+                    {
+                        pedidosQueryCommand.Parameters.Add(new SqlParameter("@id", agent_id));
+                        DataTable data = new DataTable();
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(pedidosQueryCommand))
+                        {
+                            adapter.Fill(data);
+                        }
+                        Dictionary<string, string>[] queryReturn = new Dictionary<string, string>[data.Rows.Count];
+                        for (int i = 0; i < data.Rows.Count; i++)
+                        {
+                            queryReturn[i] = new Dictionary<string, string> {
+                                {"pedidoID", data.Rows[i]["pedidoID"].ToString() },
+                                {"pedidoDataHora",data.Rows[i]["pedidoID"].ToString()}
+                            };
+                        }
+                        return queryReturn;
+                    }
+                }
+                else if (agentType == 2)
+                {
+                    using (
+                    SqlCommand pedidosQueryCommand = new SqlCommand("SELECT pedidoID, pedidoDataHora FROM tbPedido WHERE restauranteID = @id", connection)
+                    )
+                    {
+                        pedidosQueryCommand.Parameters.Add(new SqlParameter("@id", restauranteID));
+                        DataTable data = new DataTable();
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(pedidosQueryCommand))
+                        {
+                            adapter.Fill(data);
+                        }
+                        Dictionary<string, string>[] queryReturn = new Dictionary<string, string>[data.Rows.Count];
+                        for (int i = 0; i < data.Rows.Count; i++)
+                        {
+                            queryReturn[i] = new Dictionary<string, string> {
+                                {"pedidoID", data.Rows[i]["pedidoID"].ToString() },
+                                {"pedidoDataHora",data.Rows[i]["pedidoID"].ToString()}
+                            };
+                        }
+                        return queryReturn;
+                    }
+                }
+            }
+            Response.StatusCode = StatusCodes.Status500InternalServerError;
+            return new Dictionary<string, string>[0];
         }
 
+        /*
         // GET: api/Pedidos/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        [HttpGet("{agent_id}/{id}", Name = "Get")]
+        public Pedido Get(int agent_id, int id)
         {
             return "value";
         }
+        */
 
         // POST: api/Pedidos
         [HttpPost]
@@ -108,12 +185,6 @@ namespace SblendersAPI.Controllers
                     RevertPedido(pedidoID.Value);
                 }
             }
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
 
         private void RevertPedido(int pedidoID)
