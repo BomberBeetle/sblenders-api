@@ -10,9 +10,6 @@
 	->POST: Disponível para funcionarios para mudar o status do pedido
 	->GET (per-id) para clientes e funcionarios, mesma coisa so que pra ver os detalhes do pedido (ingredientes, etc)
 
--> IngredienteFotoController
-	-> Get (per-id) retorna a foto, aberto
-
 -> RestauranteController
 	->GET (per-id) retorna os detalhes de um restaurante
-	->GET (index) uhh query parms: (range x, range y) retorna os restaurantes na distancia especificada
+	->GET (index) uhh query parms: (range,lat,long) retorna os restaurantes na distancia especificada
