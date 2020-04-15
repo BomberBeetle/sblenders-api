@@ -15,4 +15,4 @@
 
 -> RestauranteController
 	->GET (per-id) retorna os detalhes de um restaurante
-	->GET (range) retorna os restaurantes na distancia especificada
+	->GET (index) uhh query parms: (range x, range y) retorna os restaurantes na distancia especificada
