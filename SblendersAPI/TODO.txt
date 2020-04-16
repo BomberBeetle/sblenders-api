@@ -8,6 +8,3 @@
 -> PedidosController
 	->POST: Disponível para funcionarios para mudar o status do pedido
 	->GET (per-id) para clientes e funcionarios, mesma coisa so que pra ver os detalhes do pedido (ingredientes, etc)
-
--> RestauranteController
-	->GET (per-id) retorna os detalhes de um restaurante
