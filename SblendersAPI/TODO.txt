@@ -1,5 +1,4 @@
-﻿-> Autenticação de Input em Todas as Coisas
-
+﻿
 -> ClienteOnlineController
 	-> Put: mandar o email
 
@@ -12,4 +11,3 @@
 
 -> RestauranteController
 	->GET (per-id) retorna os detalhes de um restaurante
-	->GET (index) uhh query parms: (range,lat,long) retorna os restaurantes na distancia especificada
