@@ -15,7 +15,7 @@ namespace SblendersAPI.Controllers
     public class FuncionarioFotoController : ControllerBase
     {
         // GET: api/FuncionarioFoto/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}", Name = "GetFuncionarioFoto")]
         public HttpResponseMessage Get(int id)
         {
             using (

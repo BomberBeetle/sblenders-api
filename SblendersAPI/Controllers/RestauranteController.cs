@@ -23,10 +23,10 @@ namespace SblendersAPI.Controllers
              SqlConnection connection = new SqlConnection(string.Format("User ID={0}; Password={1}; Initial Catalog={2}; Persist Security Info=True;Data Source={3}", Program.dbLogin, Program.dbPass, "dbSblenders", Program.dbEnv))
             )
             {
-                using (SqlCommand restauranteSelectCommand = new SqlCommand("SELECT * FROM tbRestaurante WHERE @range <= POINT(@lat @lng).STDistance(POINT(latRestaurante longRestaurante))", connection))
+                using (SqlCommand restauranteSelectCommand = new SqlCommand("SELECT * FROM tbRestaurante WHERE @range >= geography::Point(@lat, @lng, 4326).STDistance(geography::Point(restauranteLat, restauranteLong, 4326))", connection))
                 {
                     restauranteSelectCommand.Parameters.Add(new SqlParameter("@range", range));
-                    restauranteSelectCommand.Parameters.Add(new SqlParameter("@lat", lat));
+                    restauranteSelectCommand.Parameters.Add(new SqlParameter("@lat", lat ));
                     restauranteSelectCommand.Parameters.Add(new SqlParameter("@lng", lng));
 
                     using (SqlDataAdapter adapter = new SqlDataAdapter(restauranteSelectCommand))
@@ -44,12 +44,12 @@ namespace SblendersAPI.Controllers
                 }
                 return restaurantes;
             }
-            Response.StatusCode = 500;
+            Response.StatusCode = StatusCodes.Status204NoContent;
             return null;
         }
 
         // GET: api/Restaurante/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}", Name = "GetRestaurante")]
         public Restaurante Get(int id)
         {
             DataTable dt = new DataTable();
@@ -70,7 +70,7 @@ namespace SblendersAPI.Controllers
             {
                 DataRow r = dt.Rows[0];
 
-                return new Restaurante((string)r["restauranteNome"], (int)r["restauranteID"], (decimal)r["restauranteLat"], (decimal)r["restauranteLong"])
+                return new Restaurante((string)r["restauranteNome"], (int)r["restauranteID"], (decimal)r["restauranteLat"], (decimal)r["restauranteLong"]);
             }
 
             Response.StatusCode = 404;

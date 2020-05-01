@@ -101,7 +101,7 @@ namespace SblendersAPI.Controllers
                     List<ProdutoParcial> produtos = new List<ProdutoParcial>();
                     foreach(DataRow r in dataTable.Rows)
                     {
-                        var p = new ProdutoParcial((int)r["produtoID"], (decimal)r["produtoNome"], (string)r["produtoCusto"]);
+                        var p = new ProdutoParcial((int)r["produtoID"], (decimal)r["produtoCusto"], (string)r["produtoNome"]);
                         produtos.Add(p);
                     }
                     return produtos;
@@ -110,14 +110,14 @@ namespace SblendersAPI.Controllers
         }
 
         // GET: api/Produtos/5
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("{id}", Name = "GetProduto")]
         public Produto Get(int id)
         {
             using (
               SqlConnection connection = new SqlConnection(string.Format("User ID={0}; Password={1}; Initial Catalog={2}; Persist Security Info=True;Data Source={3}", Program.dbLogin, Program.dbPass, "dbSblenders", Program.dbEnv))
             )
             using (
-                SqlCommand produtoQueryCommand = new SqlCommand("SELECT produtoID, produtoNome, produtoCusto, produtoDesc FROM tbProduto WHERE produtoID = @id", connection)
+                SqlCommand produtoQueryCommand = new SqlCommand("SELECT produtoID, produtoNome, produtoCusto, produtoDescricao FROM tbProduto WHERE produtoID = @id", connection)
             )
             {
                 produtoQueryCommand.Parameters.Add(new SqlParameter("@id", id));
@@ -134,9 +134,10 @@ namespace SblendersAPI.Controllers
                     else
                     {
                         using (
-                        SqlCommand produtoIngQueryCommand = new SqlCommand("SELECT tbIngrediente.ingredienteID, ingredienteNome, produtoIngredienteID, ingredienteCusto, novoPreco, ingredienteDesc FROM tbProdutoIngrediente INNER JOIN tbIngrediente ON tbIngrediente.ingredienteID = tbProdutoIngrediente.ingredienteID WHERE tbProdutoIngrediente.produtoID = @id", connection)
+                        SqlCommand produtoIngQueryCommand = new SqlCommand("SELECT tbIngrediente.ingredienteID, ingredienteNome, produtoIngredienteID, ingredienteCusto, novoPreco, quantidadePadrao, ingredienteDescricao FROM tbProdutoIngrediente INNER JOIN tbIngrediente ON tbIngrediente.ingredienteID = tbProdutoIngrediente.ingredienteID WHERE tbProdutoIngrediente.produtoID = @id", connection)
                         )
                         {
+                            produtoIngQueryCommand.Parameters.Add(new SqlParameter("@id", id));
                             DataTable ingredients = new DataTable();
                             using (SqlDataAdapter ingredientsAdapter = new SqlDataAdapter(produtoIngQueryCommand))
                             {
@@ -153,10 +154,10 @@ namespace SblendersAPI.Controllers
                                     {
                                         preco = (decimal)r["novoPreco"];
                                     }
-                                    ProdutoIngrediente ingrediente = new ProdutoIngrediente((int)r["quantidadePadrao"], (int)r["ingredienteID"], preco, (string)r["ingredienteNome"], (string)r["ingredienteDesc"], (int)r["produtoIngredienteID"]);
+                                    ProdutoIngrediente ingrediente = new ProdutoIngrediente((int)r["quantidadePadrao"], (int)r["ingredienteID"], preco, (string)r["ingredienteNome"], (string)r["ingredienteDescricao"], (int)r["produtoIngredienteID"]);
                                     ingList.Add(ingrediente);
                                 }
-                                Produto produto = new Produto(id, (decimal)product.Rows[0]["produtoCusto"], product.Rows[0]["produtoNome"].ToString(), product.Rows[0]["produtoDesc"].ToString(),ingList.ToArray());
+                                Produto produto = new Produto(id, (decimal)product.Rows[0]["produtoCusto"], product.Rows[0]["produtoNome"].ToString(), product.Rows[0]["produtoDescricao"].ToString(),ingList.ToArray());
                                 return produto;
                             }
                         }
