@@ -64,7 +64,7 @@ namespace SblendersAPI.Controllers
                     else if ((int)agenteQuery.Rows[0]["tipoAgenteID"] == 2)
                     {
                         //Funcionario
-                        using (SqlCommand funcionarioQueryCommand = new SqlCommand("SELECT restauranteID, tipoFuncionarioID, nomeFuncionario, idFuncionario FROM tbFuncionario where agenteID = @id", connection))
+                        using (SqlCommand funcionarioQueryCommand = new SqlCommand("SELECT restauranteID, tipoFuncionarioID, funcionarioNome, funcionarioID FROM tbFuncionario where agenteID = @id", connection))
 
                         using (SqlDataAdapter funcionarioQueryAdapter = new SqlDataAdapter(funcionarioQueryCommand))
                         {
@@ -74,8 +74,8 @@ namespace SblendersAPI.Controllers
                             return new Dictionary<string, string> {
                                 { "restaurant_id", funcionarioQuery.Rows[0]["restauranteID"].ToString()},
                                 { "emp_type_id", funcionarioQuery.Rows[0]["tipoFuncionarioID"].ToString() },
-                                { "emp_name", funcionarioQuery.Rows[0]["nomeFuncionario"].ToString()},
-                                {"emp_id",  funcionarioQuery.Rows[0]["idFuncionario"].ToString() }
+                                { "emp_name", funcionarioQuery.Rows[0]["funcionarioNome"].ToString()},
+                                {"emp_id",  funcionarioQuery.Rows[0]["funcionarioID"].ToString() }
                             };
                         }
                     }
