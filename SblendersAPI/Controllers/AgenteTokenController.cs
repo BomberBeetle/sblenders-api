@@ -43,10 +43,11 @@ namespace SblendersAPI.Controllers
 
                         if ((int)idQuery.Rows[0]["tipoAgenteID"] == 1)
                         {
-                            using(SqlCommand verifyMailCommand = new SqlCommand("SELECT clienteOnlineVerificadoFlag FROM tbClienteOnline WHERE agenteID = @aid"))
+                            using(SqlCommand verifyMailCommand = new SqlCommand("SELECT clienteOnlineVerificadoFlag FROM tbClienteOnline WHERE agenteID = @aid", connection))
                             {
                                 DataTable clientVerifiedData = new DataTable();
-                                
+                                verifyMailCommand.Parameters.Add(new SqlParameter("@aid", agenteID));
+
                                 using(SqlDataAdapter d = new SqlDataAdapter(verifyMailCommand))
                                 {
                                     d.Fill(clientVerifiedData);
@@ -83,6 +84,7 @@ namespace SblendersAPI.Controllers
                 }
                 catch(Exception e)
                 {
+                    
                     Response.StatusCode = 500;
                     return new Dictionary<string, string> { { "error", "SERVICE_NOT_AVAIBLE_ERROR" }, {"debugInfo", e.Message } };
                 }

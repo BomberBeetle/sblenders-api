@@ -25,7 +25,7 @@ namespace SblendersAPI.Controllers
                 int agentType;
                 int? restauranteID;
                 using (
-                    SqlCommand agenteQueryCommand = new SqlCommand("SELECT tipoAgenteID, restauranteID FROM tbAgente WHERE agenteToken = @token AND agenteID = @id LEFT OUTER JOIN tbClienteOnline ON tbClienteOnline.agenteID = tbAgente.agenteID LEFT OUTER JOIN tbFuncionario ON tbFuncionario.agenteID = tbAgente.agenteID;", connection)
+                    SqlCommand agenteQueryCommand = new SqlCommand("SELECT tipoAgenteID, restauranteID FROM tbAgente LEFT OUTER JOIN tbClienteOnline ON tbClienteOnline.agenteID = tbAgente.agenteID LEFT OUTER JOIN tbFuncionario ON tbFuncionario.agenteID = tbAgente.agenteID WHERE agenteToken = @token AND tbAgente.agenteID = @id ;", connection)
                 )
                 {
                     agenteQueryCommand.Parameters.Add(new SqlParameter("@id", agent_id));
@@ -41,7 +41,7 @@ namespace SblendersAPI.Controllers
                             return new Dictionary<string, string>[0];
                         }
                         agentType = (int)t.Rows[0]["tipoAgenteID"];
-                        restauranteID = (int)t.Rows[0]["restauranteID"];
+                        restauranteID = t.Rows[0]["restauranteID"]!=DBNull.Value?(int)t.Rows[0]["restauranteID"]:0;
                     }
                 }
                 if (agentType == 1)
@@ -74,6 +74,7 @@ namespace SblendersAPI.Controllers
                     SqlCommand pedidosQueryCommand = new SqlCommand("SELECT pedidoID, pedidoDataHora FROM tbPedido WHERE restauranteID = @id AND estadoPedidoID IN (0,1,2,3)", connection)
                     )
                     {
+                        
                         pedidosQueryCommand.Parameters.Add(new SqlParameter("@id", restauranteID));
                         DataTable data = new DataTable();
                         using (SqlDataAdapter adapter = new SqlDataAdapter(pedidosQueryCommand))
