@@ -97,14 +97,98 @@ namespace SblendersAPI.Controllers
             return new Dictionary<string, string>[0];
         }
 
-        /*
+
         // GET: api/Pedidos/5
-        [HttpGet("{agent_id}/{id}", Name = "Get")]
+        [HttpGet("{agent_id}/{id}", Name = "GetPedido")]
         public Pedido Get(int agent_id, int id)
         {
-            return "value";
+            using (SqlConnection connection = new SqlConnection(string.Format("User ID={0}; Password={1}; Initial Catalog={2}; Persist Security Info=True;Data Source={3}", Program.dbLogin, Program.dbPass, "dbSblenders", Program.dbEnv)))
+            {
+                int agentType;
+                int? restauranteID;
+                using (
+                    SqlCommand agenteQueryCommand = new SqlCommand("SELECT tipoAgenteID, restauranteID FROM tbAgente LEFT OUTER JOIN tbClienteOnline ON tbClienteOnline.agenteID = tbAgente.agenteID LEFT OUTER JOIN tbFuncionario ON tbFuncionario.agenteID = tbAgente.agenteID WHERE agenteToken = @token AND tbAgente.agenteID = @id ;", connection)
+                )
+                {
+                    agenteQueryCommand.Parameters.Add(new SqlParameter("@id", agent_id));
+                    agenteQueryCommand.Parameters.Add(new SqlParameter("@token", Request.Headers["Authorization"].ToString()));
+                    connection.Open();
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(agenteQueryCommand))
+                    {
+                        DataTable t = new DataTable();
+                        adapter.Fill(t);
+                        if (t.Rows.Count < 1)
+                        {
+                            Response.StatusCode = StatusCodes.Status403Forbidden;
+                            return null;
+                        }
+                        agentType = (int)t.Rows[0]["tipoAgenteID"];
+                        restauranteID = t.Rows[0]["restauranteID"] != DBNull.Value ? (int)t.Rows[0]["restauranteID"] : 0;
+                    }
+                }
+                if(agentType == 1)
+                {
+                    using (
+                        SqlCommand pedidoQueryCommand = new SqlCommand("SELECT * FROM tbPedido WHERE pedidoID = @id AND agenteID = @aid", connection)
+                    )
+                    {
+                        pedidoQueryCommand.Parameters.Add(new SqlParameter("@aid", agent_id));
+                        pedidoQueryCommand.Parameters.Add(new SqlParameter("@id", id));
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(pedidoQueryCommand))
+                        {
+                            DataTable t = new DataTable();
+                            adapter.Fill(t);
+                            if (t.Rows.Count < 1)
+                            {
+                                Response.StatusCode = StatusCodes.Status404NotFound;
+                                return null;
+                            }
+                            else
+                            {
+                                List<PedidoProduto> produtos = new List<PedidoProduto>();
+
+                                using(SqlCommand pedidoProdutosQueryCommand = new SqlCommand("SELECT * FROM tbPedidoProduto WHERE pedidoID = @id", connection))
+                                {
+                                    pedidoProdutosQueryCommand.Parameters.Add(new SqlParameter("@id", id));
+                                    DataTable produtosTable = new DataTable();
+                                    using (SqlDataAdapter produtosAdapter = new SqlDataAdapter(pedidoProdutosQueryCommand))
+                                    {
+                                        produtosAdapter.Fill(produtosTable);
+                                    }
+                                    if (produtosTable.Rows.Count != 0)
+                                    {
+                                        foreach (DataRow produtoRow in produtosTable.Rows)
+                                        {
+                                            List<PedidoProdutoIngrediente> ingredientes = new List<PedidoProdutoIngrediente>();
+                                            using (SqlCommand ingredientesQueryCommand = new SqlCommand("SELECT * FROM tbPedidoProdutoIngrediente WHERE pedidoProdutoID = @id", connection))
+                                            {
+                                                ingredientesQueryCommand.Parameters.Add(new SqlParameter("@id", (int)produtoRow["pedidoProdutoID"]));
+                                                DataTable ingredientesTable = new DataTable();
+                                                using (SqlDataAdapter ingredientesAdapter = new SqlDataAdapter())
+                                                {
+                                                    ingredientesAdapter.Fill(ingredientesTable);
+                                                }
+                                                if(ingredientesTable.Rows.Count != 0)
+                                                {
+                                                    foreach (DataRow ingredienteRow in ingredientesTable.Rows)
+                                                    {
+                                                        ingredientes.Add(new PedidoProdutoIngrediente((int)ingredienteRow["produtoIngredienteID"], (int)ingredienteRow["quantidadeIngrediente"], (int)ingredienteRow["pedidoProdutoIngredienteID"]));
+                                                    }
+                                                }
+                                            }
+                                            produtos.Add(new PedidoProduto((int)produtoRow[""], (int)produtoRow["produtoID"], ingredientes.ToArray()));
+                                        }
+                                    }
+                                    return new Pedido((int)t.Rows[0]["restauranteID"], id, (int)t.Rows[0]["estadoPedidoID"], (DateTime)t.Rows[0]["dataHoraPedido"], t.Rows[0]["enderecoPedido"].ToString(), produtos.ToArray());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
         }
-        */
+        
 
         // POST: api/Pedidos
         [HttpPost("{agenteID}/{pedidoID}/{estadoID}")]
