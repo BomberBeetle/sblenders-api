@@ -21,14 +21,14 @@ namespace SblendersAPI.Controllers
                SqlConnection connection = new SqlConnection(string.Format("User ID={0}; Password={1}; Initial Catalog={2}; Persist Security Info=True;Data Source={3}", Program.dbLogin, Program.dbPass, "dbSblenders", Program.dbEnv))
                )
             using (
-                SqlCommand idQueryCommand = new SqlCommand("SELECT agenteID, tipoAgenteID FROM tbAgente WHERE agenteLogin= @login AND agenteSenha = @pass ;", connection)
+                SqlCommand idQueryCommand = new SqlCommand("SELECT agenteID, tipoAgenteID, agenteSalt, agenteSenha FROM tbAgente WHERE agenteLogin= @login;", connection)
             )
             using (SqlDataAdapter idQueryAdapter = new SqlDataAdapter(idQueryCommand))
             {
                 try
                 {
+                    
                     idQueryCommand.Parameters.Add(new SqlParameter("@login", login));
-                    idQueryCommand.Parameters.Add(new SqlParameter("@pass", PasswordHasher.Hash(pass, Program.hashSalt)));
                     connection.Open();
                     DataTable idQuery = new DataTable();
                     idQueryAdapter.Fill(idQuery);
@@ -40,6 +40,14 @@ namespace SblendersAPI.Controllers
                     else
                     {
                         string agenteID = idQuery.Rows[0]["agenteID"].ToString();
+                        string debug1 = idQuery.Rows[0]["agenteSenha"].ToString();
+                        string debug2 = PasswordHasher.Hash(pass, idQuery.Rows[0]["agenteSalt"].ToString());
+                        string debug3 = idQuery.Rows[0]["agenteSalt"].ToString();
+                        if (idQuery.Rows[0]["agenteSenha"].ToString() != PasswordHasher.Hash(pass, idQuery.Rows[0]["agenteSalt"].ToString()))
+                        {
+                            Response.StatusCode = 403;
+                            return new Dictionary<string, string> { { "error", "AUTH_ERROR" } };
+                        }
 
                         if ((int)idQuery.Rows[0]["tipoAgenteID"] == 1)
                         {

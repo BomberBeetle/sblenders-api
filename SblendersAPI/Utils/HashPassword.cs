@@ -13,10 +13,9 @@ namespace SblendersAPI.Utils
     {
         public static string Hash(string pass, string salt)
         {
-            SHA256 mySHA256 = SHA256.Create();
-            return BitConverter.ToString(mySHA256.ComputeHash(Encoding.UTF8.GetBytes(pass + salt))).Replace("-", "");
+            Rfc2898DeriveBytes pbkdf = new Rfc2898DeriveBytes(pass, Encoding.UTF8.GetBytes(salt), 100);
+            return BitConverter.ToString(pbkdf.GetBytes(32)).Replace("-", "");
         }
-
     }
 
 }

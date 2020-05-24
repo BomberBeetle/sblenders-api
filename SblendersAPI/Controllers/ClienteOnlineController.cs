@@ -144,11 +144,13 @@ namespace SblendersAPI.Controllers
                     SqlConnection connection = new SqlConnection(string.Format("User ID={0}; Password={1}; Initial Catalog={2}; Persist Security Info=True;Data Source={3}", Program.dbLogin, Program.dbPass, "dbSblenders", Program.dbEnv))
                 )
                 using (
-                   SqlCommand insertAgentCommand = new SqlCommand("INSERT INTO tbAgente(tipoAgenteID, agenteLogin, agenteSenha) VALUES(1, @login, @pass) SELECT CAST(SCOPE_IDENTITY() AS INT)", connection)
+                   SqlCommand insertAgentCommand = new SqlCommand("INSERT INTO tbAgente(tipoAgenteID, agenteLogin, agenteSenha, agenteSalt) VALUES(1, @login, @pass, @salt) SELECT CAST(SCOPE_IDENTITY() AS INT)", connection)
                 )
                 {
+                    string salt = RandomGenerator.GenerateHexString(32);
+                    insertAgentCommand.Parameters.Add(new SqlParameter("@salt", salt));
                     insertAgentCommand.Parameters.Add(new SqlParameter("@login", newClient.Login));
-                    insertAgentCommand.Parameters.Add(new SqlParameter("@pass", PasswordHasher.Hash(newClient.Password, Program.hashSalt)));
+                    insertAgentCommand.Parameters.Add(new SqlParameter("@pass", PasswordHasher.Hash(newClient.Password, salt)));
                     connection.Open();
                     int agentID;
                     try
