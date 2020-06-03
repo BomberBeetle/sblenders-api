@@ -223,7 +223,7 @@ namespace SblendersAPI.Controllers
         }
 
         // PUT: api/Pedidos/5
-        [HttpPut("{id}")]
+        [HttpPut]
         public void Put([FromBody] Pedido pedido)
         {
             DataTable agentData = new DataTable();
@@ -250,15 +250,16 @@ namespace SblendersAPI.Controllers
                 }
                 
                     using (
-                        SqlCommand insertPedidoCommand = new SqlCommand("INSERT INTO tbPedido(restauranteID, agenteID, enderecoEntrega, dataHoraPedido, estadoPedidoID) VALUES(@restID, @agID, @endereco, @datahora, 0) SELECT CAST(SCOPE_IDENTITY() AS INT)", connection)
+                        SqlCommand insertPedidoCommand = new SqlCommand("INSERT INTO tbPedido(restauranteID, agenteID, enderecoPedido, pedidoDataHora, estadoPedidoID, instrucoes) VALUES(@restID, @agID, @endereco, @datahora, 1, @instrucoes) SELECT CAST(SCOPE_IDENTITY() AS INT)", connection)
                     )
                     {
                         insertPedidoCommand.Parameters.Add(new SqlParameter("@restID", pedido.restauranteID));
                         insertPedidoCommand.Parameters.Add(new SqlParameter("@agID", pedido.agenteID));
                         insertPedidoCommand.Parameters.Add(new SqlParameter("@endereco", pedido.endereco));
-                        insertPedidoCommand.Parameters.Add(new SqlParameter("@datahora", pedido.dataHoraPedido));
-                        pedidoID = (int?)insertPedidoCommand.ExecuteScalar();
-                        if(pedidoID != 1) {
+                        insertPedidoCommand.Parameters.Add(new SqlParameter("@instrucoes", pedido.instrucoes));
+                        insertPedidoCommand.Parameters.Add(new SqlParameter("@datahora", DateTime.Now));
+                    pedidoID = (int?)insertPedidoCommand.ExecuteScalar();
+                        if(pedidoID == null) {
                             Response.StatusCode = StatusCodes.Status500InternalServerError;
                             return;
                         }
@@ -285,7 +286,7 @@ namespace SblendersAPI.Controllers
                             {
                                 insertIngredienteCommand.Parameters.Add(new SqlParameter("@ppID", pedProdID));
                                 insertIngredienteCommand.Parameters.Add(new SqlParameter("@piID",ingrediente.ProdutoIngredienteID));
-                                insertIngredienteCommand.Parameters.Add(new SqlParameter("@ppID", ingrediente.Quantidade));
+                                insertIngredienteCommand.Parameters.Add(new SqlParameter("@qtde", ingrediente.Quantidade));
                                 insertIngredienteCommand.ExecuteNonQuery();
                             }
                         }

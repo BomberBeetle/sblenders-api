@@ -13,6 +13,7 @@ namespace SblendersAPI.Models
         public DateTime dataHoraPedido;
         public string endereco;
         public PedidoProduto[] produtos;
+        public string instrucoes;
 
         public Pedido(int restauranteID, int agenteID, int estadoID, DateTime dataHoraPedido, string endereco, PedidoProduto[] produtos)
         {
