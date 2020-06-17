@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SblendersAPI.Models
 {
-    public class Produto
+    public class Produto : ProdutoParcial
     {
         public int ID;
         public decimal Cost;
@@ -13,11 +13,8 @@ namespace SblendersAPI.Models
         public string Desc;
         public ProdutoIngrediente[] ingredientes;
 
-        public Produto(int iD, decimal cost, string name, string desc, ProdutoIngrediente[] ingredientes)
+        public Produto(int iD, decimal cost, string name, string desc, ProdutoIngrediente[] ingredientes) : base(iD, cost, name)
         {
-            ID = iD;
-            Cost = cost;
-            Name = name;
             Desc = desc;
             this.ingredientes = ingredientes;
         }
