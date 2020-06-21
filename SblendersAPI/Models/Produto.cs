@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 namespace SblendersAPI.Models
 {
     public class Produto : ProdutoParcial
-    {
-        public int ID;
-        public decimal Cost;
-        public string Name;
+{
         public string Desc;
         public ProdutoIngrediente[] ingredientes;
 
