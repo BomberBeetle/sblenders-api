@@ -134,7 +134,7 @@ namespace SblendersAPI.Controllers
                     else
                     {
                         using (
-                        SqlCommand produtoIngQueryCommand = new SqlCommand("SELECT tbIngrediente.ingredienteID, ingredienteNome, produtoIngredienteID, ingredienteCusto, novoPreco, quantidadePadrao, ingredienteDescricao FROM tbProdutoIngrediente INNER JOIN tbIngrediente ON tbIngrediente.ingredienteID = tbProdutoIngrediente.ingredienteID WHERE tbProdutoIngrediente.produtoID = @id", connection)
+                        SqlCommand produtoIngQueryCommand = new SqlCommand("SELECT tbIngrediente.ingredienteID, ingredienteNome, produtoIngredienteID, ingredienteCusto, novoPreco, quantidadePadrao, ingredienteDescricao, categoriaIngredienteID FROM tbProdutoIngrediente INNER JOIN tbIngrediente ON tbIngrediente.ingredienteID = tbProdutoIngrediente.ingredienteID WHERE tbProdutoIngrediente.produtoID = @id", connection)
                         )
                         {
                             produtoIngQueryCommand.Parameters.Add(new SqlParameter("@id", id));
@@ -154,7 +154,7 @@ namespace SblendersAPI.Controllers
                                     {
                                         preco = (decimal)r["novoPreco"];
                                     }
-                                    ProdutoIngrediente ingrediente = new ProdutoIngrediente((int)r["quantidadePadrao"], (int)r["ingredienteID"], preco, (string)r["ingredienteNome"], (string)r["ingredienteDescricao"], (int)r["produtoIngredienteID"]);
+                                    ProdutoIngrediente ingrediente = new ProdutoIngrediente((int)r["quantidadePadrao"], (int)r["ingredienteID"], preco, (string)r["ingredienteNome"], (string)r["ingredienteDescricao"], (int)r["produtoIngredienteID"], (int)r["categoriaIngredienteID"]);
                                     ingList.Add(ingrediente);
                                 }
                                 Produto produto = new Produto(id, (decimal)product.Rows[0]["produtoCusto"], product.Rows[0]["produtoNome"].ToString(), product.Rows[0]["produtoDescricao"].ToString(),ingList.ToArray());
