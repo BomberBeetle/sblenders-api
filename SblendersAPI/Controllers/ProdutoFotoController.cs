@@ -26,6 +26,7 @@ namespace SblendersAPI.Controllers
                SqlCommand selectProductPhotoCommand = new SqlCommand("SELECT produtoFoto FROM tbProduto WHERE produtoID = @id", connection)
                 )
             {
+                connection.Open();
                 selectProductPhotoCommand.Parameters.Add(new SqlParameter("@id", id));
                 byte[] photoFile = (byte[])selectProductPhotoCommand.ExecuteScalar();
                 HttpResponseMessage responseMessage = new HttpResponseMessage();
