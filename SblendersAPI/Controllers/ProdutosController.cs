@@ -37,11 +37,11 @@ namespace SblendersAPI.Controllers
 
                 }
             }
-            if (Request.Query["itemCount"].Count != 0)
+            if (Request.Query["count"].Count != 0)
             {
                 try
                 {
-                    itemCount = int.Parse(Request.Query["itemCount"][0]);
+                    itemCount = int.Parse(Request.Query["count"][0]);
                 }
                 catch
                 {
@@ -52,14 +52,15 @@ namespace SblendersAPI.Controllers
             {
                 try
                 {
-                    query = Request.Query["page"][0];
+                    query = Request.Query["query"][0];
+                    filterByQuery = true;
                 }
                 catch
                 {
 
                 }
             }
-            if (Request.Query["category"].Count != 0)
+            if (Request.Query["cat"].Count != 0)
             {
                 try
                 {
@@ -68,7 +69,7 @@ namespace SblendersAPI.Controllers
                 }
                 catch
                 {
-                    filterByCategory = false;
+                    
                 }
             }
             if (Request.Query["sort"].Count != 0)
@@ -86,7 +87,7 @@ namespace SblendersAPI.Controllers
               SqlConnection connection = new SqlConnection(string.Format("User ID={0}; Password={1}; Initial Catalog={2}; Persist Security Info=True;Data Source={3}", Program.dbLogin, Program.dbPass, "dbSblenders", Program.dbEnv))
               )
             using (
-                SqlCommand produtosQueryCommand = new SqlCommand($"SELECT produtoID, produtoNome, produtoCusto FROM tbProduto WHERE {(filterByCategory ? "categoriaID = @cat" : "1=1")} AND {(filterByCategory ? $"produtoNome LIKE '%@query%'" : "1=1")} ORDER BY {sortString} OFFSET @offset ROWS FETCH NEXT @itemCount ROWS ONLY;", connection)
+                SqlCommand produtosQueryCommand = new SqlCommand($"SELECT produtoID, produtoNome, produtoCusto FROM tbProduto WHERE {(filterByCategory ? "categoriaProdutoID = @cat" : "1=1")} AND {(filterByQuery ? $"produtoNome LIKE '%'+@query+'%'" : "1=1")} ORDER BY {sortString} OFFSET @offset ROWS FETCH NEXT @itemCount ROWS ONLY;", connection)
             )
             {
                 produtosQueryCommand.Parameters.Add(new SqlParameter("@cat", category));
