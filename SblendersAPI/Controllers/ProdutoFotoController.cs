@@ -17,7 +17,7 @@ namespace SblendersAPI.Controllers
 
         // GET: api/ProdutoFoto/5
         [HttpGet("{id}", Name = "GetProductPhoto")]
-        public HttpResponseMessage Get(int id)
+        public IActionResult Get(int id)
         {
             using (
                 SqlConnection connection = new SqlConnection(string.Format("User ID={0}; Password={1}; Initial Catalog={2}; Persist Security Info=True;Data Source={3}", Program.dbLogin, Program.dbPass, "dbSblenders", Program.dbEnv))
@@ -29,10 +29,8 @@ namespace SblendersAPI.Controllers
                 connection.Open();
                 selectProductPhotoCommand.Parameters.Add(new SqlParameter("@id", id));
                 byte[] photoFile = (byte[])selectProductPhotoCommand.ExecuteScalar();
-                HttpResponseMessage responseMessage = new HttpResponseMessage();
-                responseMessage.Content = new ByteArrayContent(photoFile);
-                responseMessage.Content.Headers.ContentType = new MediaTypeHeaderValue("image/jpg");
-                return responseMessage;
+                
+                return File(photoFile, "image/jpg");
             }
         }
 
