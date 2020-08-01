@@ -99,7 +99,8 @@ namespace SblendersAPI.Controllers
                 }
                 catch(Exception e)
                 {
-                    return new Dictionary<string, string> { { "error", "AUTH_ERROR" }, { "debugInfo", e.Message } };
+                    Response.StatusCode = StatusCodes.Status403Forbidden;
+                    return new Dictionary<string, string> { { "error", "AUTH_ERROR" }};
                 }
             }
 
