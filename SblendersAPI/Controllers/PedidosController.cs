@@ -164,7 +164,7 @@ namespace SblendersAPI.Controllers
                                             {
                                                 ingredientesQueryCommand.Parameters.Add(new SqlParameter("@id", (int)produtoRow["pedidoProdutoID"]));
                                                 DataTable ingredientesTable = new DataTable();
-                                                using (SqlDataAdapter ingredientesAdapter = new SqlDataAdapter())
+                                                using (SqlDataAdapter ingredientesAdapter = new SqlDataAdapter(ingredientesQueryCommand))
                                                 {
                                                     ingredientesAdapter.Fill(ingredientesTable);
                                                 }
@@ -180,6 +180,66 @@ namespace SblendersAPI.Controllers
                                         }
                                     }
                                     return new Pedido((int)t.Rows[0]["restauranteID"], id, (int)t.Rows[0]["estadoPedidoID"], (DateTime)t.Rows[0]["dataHoraPedido"], t.Rows[0]["enderecoPedido"].ToString(), produtos.ToArray());
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (agentType == 2)
+                {
+                    using (
+                        SqlCommand pedidoQueryCommand = new SqlCommand("SELECT * FROM tbPedido WHERE pedidoID = @id AND restauranteID = @rid", connection)
+                    )
+                    {
+                        pedidoQueryCommand.Parameters.Add(new SqlParameter("@rid", restauranteID));
+                        pedidoQueryCommand.Parameters.Add(new SqlParameter("@id", id));
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(pedidoQueryCommand))
+                        {
+                            DataTable t = new DataTable();
+                            adapter.Fill(t);
+                            if (t.Rows.Count < 1)
+                            {
+                                Response.StatusCode = StatusCodes.Status404NotFound;
+                                return null;
+                            }
+                            else
+                            {
+                                List<PedidoProduto> produtos = new List<PedidoProduto>();
+
+                                using (SqlCommand pedidoProdutosQueryCommand = new SqlCommand("SELECT * FROM tbPedidoProduto WHERE pedidoID = @id", connection))
+                                {
+                                    pedidoProdutosQueryCommand.Parameters.Add(new SqlParameter("@id", id));
+                                    DataTable produtosTable = new DataTable();
+                                    using (SqlDataAdapter produtosAdapter = new SqlDataAdapter(pedidoProdutosQueryCommand))
+                                    {
+                                        produtosAdapter.Fill(produtosTable);
+                                    }
+                                    if (produtosTable.Rows.Count != 0)
+                                    {
+                                        foreach (DataRow produtoRow in produtosTable.Rows)
+                                        {
+                                            List<PedidoProdutoIngrediente> ingredientes = new List<PedidoProdutoIngrediente>();
+                                            using (SqlCommand ingredientesQueryCommand = new SqlCommand("SELECT * FROM tbPedidoProdutoIngrediente WHERE pedidoProdutoID = @id", connection))
+                                            {
+                                                ingredientesQueryCommand.Parameters.Add(new SqlParameter("@id", (int)produtoRow["pedidoProdutoID"]));
+                                                DataTable ingredientesTable = new DataTable();
+                                                using (SqlDataAdapter ingredientesAdapter = new SqlDataAdapter(ingredientesQueryCommand))
+                                                {
+
+                                                    ingredientesAdapter.Fill(ingredientesTable);
+                                                }
+                                                if (ingredientesTable.Rows.Count != 0)
+                                                {
+                                                    foreach (DataRow ingredienteRow in ingredientesTable.Rows)
+                                                    {
+                                                        ingredientes.Add(new PedidoProdutoIngrediente((int)ingredienteRow["produtoIngredienteID"], (int)ingredienteRow["quantidadeIngrediente"], (int)ingredienteRow["pedidoProdutoIngredienteID"]));
+                                                    }
+                                                }
+                                            }
+                                            produtos.Add(new PedidoProduto((int)produtoRow["pedidoProdutoQtde"], (int)produtoRow["produtoID"], ingredientes.ToArray()));
+                                        }
+                                    }
+                                    return new Pedido((int)t.Rows[0]["restauranteID"], id, (int)t.Rows[0]["estadoPedidoID"], (DateTime)t.Rows[0]["pedidoDataHora"], t.Rows[0]["enderecoPedido"].ToString(), produtos.ToArray());
                                 }
                             }
                         }
