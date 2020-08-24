@@ -31,6 +31,12 @@ namespace SblendersAPI
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddCors(o => o.AddPolicy("AllowAll", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -47,7 +53,7 @@ namespace SblendersAPI
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
-
+            app.UseCors("AllowAll");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
