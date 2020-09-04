@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SblendersAPI.Models.Agente">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAAAAAAAAACAAAQAAAAAAA=</HashCode>
+      <FileName>Models\Agente.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SblendersAPI.Models.ClienteOnline">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAAIAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Models\ClienteOnline.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SblendersAPI.Models.Pedido">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAABAAAAAAgQAAAAAAAAQAAgACAA=</HashCode>
+      <FileName>Models\Pedido.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SblendersAPI.Models.PedidoProduto">
+    <Position X="5.75" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAACAAAAAAABAAAAAAAAAAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\PedidoProduto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SblendersAPI.Models.PedidoProdutoIngrediente">
+    <Position X="7.75" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAQAEAAAAA=</HashCode>
+      <FileName>Models\PedidoProdutoIngrediente.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SblendersAPI.Models.Produto">
+    <Position X="10.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAQAAAAAA=</HashCode>
+      <FileName>Models\Produto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SblendersAPI.Models.ProdutoIngrediente">
+    <Position X="12" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAgAQAAAAAAAAAAAAQAAAAAAAAAAAgAQABAAAA=</HashCode>
+      <FileName>Models\ProdutoIngrediente.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SblendersAPI.Models.ProdutoParcial">
+    <Position X="10.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAABQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\ProdutoParcial.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SblendersAPI.Models.Restaurante">
+    <Position X="14.25" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAgAAAAQAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Models\Restaurante.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

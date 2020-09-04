@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SblendersAPI.Controllers.AgenteController">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\AgenteController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SblendersAPI.Controllers.AgenteTokenController">
+    <Position X="2.25" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\AgenteTokenController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SblendersAPI.Controllers.AutenticaClienteOnlineController">
+    <Position X="4.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\AutenticaClienteOnlineController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SblendersAPI.Controllers.CategoriaIngredienteController">
+    <Position X="7.25" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\CategoriaIngredienteController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SblendersAPI.Controllers.ClienteOnlineController">
+    <Position X="10" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAEAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Controllers\ClienteOnlineController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SblendersAPI.Controllers.FuncionarioFotoController">
+    <Position X="12.25" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\FuncionarioFotoController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SblendersAPI.Controllers.IngredienteFotoController">
+    <Position X="0.5" Y="2.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\IngredienteFotoController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SblendersAPI.Controllers.PedidosController">
+    <Position X="2.75" Y="2.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAABAAAAAAAAACAAAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Controllers\PedidosController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SblendersAPI.Controllers.ProdutoFotoController">
+    <Position X="4.75" Y="2.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\ProdutoFotoController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SblendersAPI.Controllers.ProdutosController">
+    <Position X="7" Y="2.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAACAEAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Controllers\ProdutosController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SblendersAPI.Controllers.RestauranteController">
+    <Position X="9" Y="2.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\RestauranteController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
