@@ -44,8 +44,7 @@ namespace SblendersAPI.Controllers
                 }
                 return restaurantes;
             }
-            Response.StatusCode = StatusCodes.Status204NoContent;
-            return null;
+            return new List<Restaurante>(); ;
         }
 
         // GET: api/Restaurante/5
