@@ -36,28 +36,28 @@
     </TypeIdentifier>
   </Class>
   <Class Name="SblendersAPI.Models.Produto">
-    <Position X="10.25" Y="0.5" Width="1.5" />
+    <Position X="4.75" Y="3.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAQAAAAAA=</HashCode>
       <FileName>Models\Produto.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="SblendersAPI.Models.ProdutoIngrediente">
-    <Position X="12" Y="0.5" Width="2" />
+    <Position X="0.5" Y="3.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAEAAAAgAQAAAAAAAAAAAAQAAAAAAAAAAAgAQABAAAA=</HashCode>
       <FileName>Models\ProdutoIngrediente.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="SblendersAPI.Models.ProdutoParcial">
-    <Position X="10.25" Y="2.75" Width="1.5" />
+    <Position X="6.75" Y="3.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAgAAAAAAAABQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\ProdutoParcial.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="SblendersAPI.Models.Restaurante">
-    <Position X="14.25" Y="0.5" Width="1.75" />
+    <Position X="2.75" Y="3.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AEAAAAAAAAAAAAAAAAAAAgAAAAQAAAAAAAAAgAAAAAA=</HashCode>
       <FileName>Models\Restaurante.cs</FileName>
