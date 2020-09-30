@@ -158,7 +158,24 @@ namespace SblendersAPI.Controllers
                                     ProdutoIngrediente ingrediente = new ProdutoIngrediente((int)r["quantidadePadrao"], (int)r["ingredienteID"], preco, (string)r["ingredienteNome"], (string)r["ingredienteDescricao"], (int)r["produtoIngredienteID"], (int)r["categoriaIngredienteID"]);
                                     ingList.Add(ingrediente);
                                 }
-                                Produto produto = new Produto(id, (decimal)product.Rows[0]["produtoCusto"], product.Rows[0]["produtoNome"].ToString(), product.Rows[0]["produtoDescricao"].ToString(),ingList.ToArray());
+                                List<Produto.InformacaoNutricional> nutriInfo = new List<Produto.InformacaoNutricional>();
+                                using (
+                                SqlCommand produtoInfoNutrQuery = new SqlCommand("SELECT tbInformacaoNutricional.informacaoNutricionalValor, tbInformacaoNutricionalTipo.informacaoNutriTipoDescricao FROM tbInformacaoNutricional INNER JOIN tbInformacaoNutricionalTipo ON tbInformacaoNutricional.informacaoNutriTipoID = tbInformacaoNutricionalTipo.informacaoNutriTipoID WHERE tbInformacaoNutricional.produtoID = @id", connection)
+                                ){
+                                     using (SqlDataAdapter nutriAdapter = new SqlDataAdapter(produtoInfoNutrQuery)){
+                                        DataTable nutriInfoTable = new DataTable();
+                                        ingredientsAdapter.Fill(nutriInfoTable);
+                                        
+                                        foreach(DataRow r in nutriInfoTable.Rows){
+                                            nutriInfo.Add(new Produto.InformacaoNutricional((string)r["informacaoNutriTipoDescricao"],(int)r["informacaoNutricionalValor"]));
+                                        }
+                                     }
+
+                                    
+                                }
+
+
+                                Produto produto = new Produto(id, (decimal)product.Rows[0]["produtoCusto"], product.Rows[0]["produtoNome"].ToString(), product.Rows[0]["produtoDescricao"].ToString(),ingList.ToArray(), nutriInfo.ToArray());
                                 return produto;
                             }
                         }
