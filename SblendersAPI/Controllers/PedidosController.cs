@@ -71,7 +71,7 @@ namespace SblendersAPI.Controllers
                 else if (agentType == 2)
                 {
                     using (
-                    SqlCommand pedidosQueryCommand = new SqlCommand("SELECT pedidoID, pedidoDataHora FROM tbPedido WHERE restauranteID = @id AND estadoPedidoID IN (0,1,2,3)", connection)
+                    SqlCommand pedidosQueryCommand = new SqlCommand("SELECT pedidoID, pedidoDataHora FROM tbPedido WHERE restauranteID = @id AND estadoPedidoID IN (1,3)", connection)
                     )
                     {
                         
@@ -252,7 +252,7 @@ namespace SblendersAPI.Controllers
 
         // POST: api/Pedidos
         [HttpPost("{agenteID}/{pedidoID}/{estadoID}")]
-        public void Post(int agenteID, int pedidoID)
+        public void Post(int agenteID, int pedidoID, int estadoID)
         {
             using (
             SqlConnection connection = new SqlConnection(string.Format("User ID={0}; Password={1}; Initial Catalog={2}; Persist Security Info=True;Data Source={3}", Program.dbLogin, Program.dbPass, "dbSblenders", Program.dbEnv))
@@ -263,6 +263,8 @@ namespace SblendersAPI.Controllers
                     SqlCommand agenteQueryCommand = new SqlCommand("SELECT tipoAgenteID FROM tbAgente WHERE agenteToken = @token AND agenteID = @id ;", connection)
                 )
                 {
+                    agenteQueryCommand.Parameters.Add(new SqlParameter("@token", Request.Headers["Authorization"].ToString()));
+                    agenteQueryCommand.Parameters.Add(new SqlParameter("@id", agenteID));
                     int? tipoAgenteID = (int?)agenteQueryCommand.ExecuteScalar();
                     if(tipoAgenteID != 2 || tipoAgenteID == null)
                     {
@@ -274,6 +276,8 @@ namespace SblendersAPI.Controllers
                     SqlCommand updatePedidoCommand = new SqlCommand("UPDATE tbPedido SET estadoPedidoID = @estadoID WHERE pedidoID=@pedidoID", connection)
                     )
                 {
+                    updatePedidoCommand.Parameters.Add(new SqlParameter("@estadoID", estadoID));
+                    updatePedidoCommand.Parameters.Add(new SqlParameter("@pedidoID", pedidoID));
                     if(updatePedidoCommand.ExecuteNonQuery() < 1)
                     {
                         Response.StatusCode = StatusCodes.Status400BadRequest;
