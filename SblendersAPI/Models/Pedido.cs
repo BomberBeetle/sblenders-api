@@ -15,7 +15,7 @@ namespace SblendersAPI.Models
         public PedidoProduto[] produtos;
         public string instrucoes;
 
-        public Pedido(int restauranteID, int agenteID, int estadoID, DateTime dataHoraPedido, string endereco, PedidoProduto[] produtos)
+        public Pedido(int restauranteID, int agenteID, int estadoID, DateTime dataHoraPedido, string endereco, PedidoProduto[] produtos, string instrucoes)
         {
             this.restauranteID = restauranteID;
             this.agenteID = agenteID;
@@ -23,6 +23,7 @@ namespace SblendersAPI.Models
             this.dataHoraPedido = dataHoraPedido;
             this.endereco = endereco;
             this.produtos = produtos;
+            this.instrucoes = instrucoes;
         }
     }
 }

@@ -62,7 +62,7 @@ namespace SblendersAPI.Controllers
                         {
                             queryReturn[i] = new Dictionary<string, string> {
                                 {"pedidoID", data.Rows[i]["pedidoID"].ToString() },
-                                {"pedidoDataHora",data.Rows[i]["pedidoID"].ToString()}
+                                {"pedidoDataHora",data.Rows[i]["pedidoDataHora"].ToString()}
                             };
                         }
                         return queryReturn;
@@ -86,7 +86,7 @@ namespace SblendersAPI.Controllers
                         {
                             queryReturn[i] = new Dictionary<string, string> {
                                 {"pedidoID", data.Rows[i]["pedidoID"].ToString() },
-                                {"pedidoDataHora",data.Rows[i]["pedidoID"].ToString()}
+                                {"pedidoDataHora",data.Rows[i]["pedidoDataHora"].ToString()}
                             };
                         }
                         return queryReturn;
@@ -176,10 +176,10 @@ namespace SblendersAPI.Controllers
                                                     }
                                                 }
                                             }
-                                            produtos.Add(new PedidoProduto((int)produtoRow[""], (int)produtoRow["produtoID"], ingredientes.ToArray()));
+                                            produtos.Add(new PedidoProduto((int)produtoRow["pedidoProdutoQtde"], (int)produtoRow["produtoID"], ingredientes.ToArray()));
                                         }
                                     }
-                                    return new Pedido((int)t.Rows[0]["restauranteID"], id, (int)t.Rows[0]["estadoPedidoID"], (DateTime)t.Rows[0]["dataHoraPedido"], t.Rows[0]["enderecoPedido"].ToString(), produtos.ToArray());
+                                    return new Pedido((int)t.Rows[0]["restauranteID"], id, (int)t.Rows[0]["estadoPedidoID"], (DateTime)t.Rows[0]["pedidoDataHora"], t.Rows[0]["enderecoPedido"].ToString(), produtos.ToArray(), t.Rows[0]["instrucoes"].Equals(DBNull.Value)?null:(string)t.Rows[0]["instrucoes"]);
                                 }
                             }
                         }
@@ -239,7 +239,7 @@ namespace SblendersAPI.Controllers
                                             produtos.Add(new PedidoProduto((int)produtoRow["pedidoProdutoQtde"], (int)produtoRow["produtoID"], ingredientes.ToArray()));
                                         }
                                     }
-                                    return new Pedido((int)t.Rows[0]["restauranteID"], id, (int)t.Rows[0]["estadoPedidoID"], (DateTime)t.Rows[0]["pedidoDataHora"], t.Rows[0]["enderecoPedido"].ToString(), produtos.ToArray());
+                                    return new Pedido((int)t.Rows[0]["restauranteID"], id, (int)t.Rows[0]["estadoPedidoID"], (DateTime)t.Rows[0]["pedidoDataHora"], t.Rows[0]["enderecoPedido"].ToString(), produtos.ToArray(), t.Rows[0]["instrucoes"].Equals(DBNull.Value)?null:(string)t.Rows[0]["instrucoes"]);
                                 }
                             }
                         }
