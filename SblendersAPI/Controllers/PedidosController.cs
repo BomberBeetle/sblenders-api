@@ -24,8 +24,9 @@ namespace SblendersAPI.Controllers
             {
                 int agentType;
                 int? restauranteID;
+                int? tipoFuncionarioID;
                 using (
-                    SqlCommand agenteQueryCommand = new SqlCommand("SELECT tipoAgenteID, restauranteID FROM tbAgente LEFT OUTER JOIN tbClienteOnline ON tbClienteOnline.agenteID = tbAgente.agenteID LEFT OUTER JOIN tbFuncionario ON tbFuncionario.agenteID = tbAgente.agenteID WHERE agenteToken = @token AND tbAgente.agenteID = @id ;", connection)
+                    SqlCommand agenteQueryCommand = new SqlCommand("SELECT tipoAgenteID, restauranteID, tbFuncionario.tipoFuncionarioID FROM tbAgente LEFT OUTER JOIN tbClienteOnline ON tbClienteOnline.agenteID = tbAgente.agenteID LEFT OUTER JOIN tbFuncionario ON tbFuncionario.agenteID = tbAgente.agenteID WHERE agenteToken = @token AND tbAgente.agenteID = @id ;", connection)
                 )
                 {
                     agenteQueryCommand.Parameters.Add(new SqlParameter("@id", agent_id));
@@ -42,6 +43,7 @@ namespace SblendersAPI.Controllers
                         }
                         agentType = (int)t.Rows[0]["tipoAgenteID"];
                         restauranteID = t.Rows[0]["restauranteID"]!=DBNull.Value?(int)t.Rows[0]["restauranteID"]:0;
+                        tipoFuncionarioID = t.Rows[0]["tipoFuncionarioID"]!=DBNull.Value?(int)t.Rows[0]["tipoFuncionarioID"]:0;
                     }
                 }
                 if (agentType == 1)
@@ -70,8 +72,9 @@ namespace SblendersAPI.Controllers
                 }
                 else if (agentType == 2)
                 {
+                    int queryStateCondition = tipoFuncionarioID==1?1:tipoFuncionarioID==2?3:0;
                     using (
-                    SqlCommand pedidosQueryCommand = new SqlCommand("SELECT pedidoID, pedidoDataHora FROM tbPedido WHERE restauranteID = @id AND estadoPedidoID IN (1,3)", connection)
+                    SqlCommand pedidosQueryCommand = new SqlCommand($"SELECT pedidoID, pedidoDataHora FROM tbPedido WHERE restauranteID = @id AND estadoPedidoID IN ({queryStateCondition})", connection)
                     )
                     {
                         
