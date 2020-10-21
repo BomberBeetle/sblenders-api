@@ -294,7 +294,6 @@ namespace SblendersAPI.Controllers
         public void Put([FromBody] Pedido pedido)
         {
             DataTable agentData = new DataTable();
-            int restaurantID = 0;
             int? pedidoID = null;
             using (
               SqlConnection connection = new SqlConnection(string.Format("User ID={0}; Password={1}; Initial Catalog={2}; Persist Security Info=True;Data Source={3}", Program.dbLogin, Program.dbPass, "dbSblenders", Program.dbEnv))
