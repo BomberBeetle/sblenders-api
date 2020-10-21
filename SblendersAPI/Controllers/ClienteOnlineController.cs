@@ -201,7 +201,59 @@ namespace SblendersAPI.Controllers
             }
 
         }
+        [HttpPost("{id}")]
+        public void Post([FromBody] ClienteOnline new_info, int id){
 
+            string token = Request.Headers["Authorization"];
+
+            using (
+              SqlConnection connection = new SqlConnection(string.Format(
+                  "User ID={0}; Password={1}; Initial Catalog={2}; Persist Security Info=True;Data Source={3}"
+                  , Program.dbLogin, Program.dbPass, "dbSblenders", Program.dbEnv))
+              )
+
+            using (
+                SqlCommand userQueryCommand = new SqlCommand(
+                    "SELECT agenteID, tipoAgenteID, agenteSalt FROM tbAgente WHERE agenteID= @id AND agenteToken = @token;"
+                    , connection)
+            ){
+                userQueryCommand.Parameters.Add(new SqlParameter("@id", id));
+                userQueryCommand.Parameters.Add(new SqlParameter("@token", token));
+                using (SqlDataAdapter sqlAdapter = new SqlDataAdapter(userQueryCommand)){
+                    var authTable = new DataTable();
+                    sqlAdapter.Fill(authTable);
+                    if(authTable.Rows.Count != 1){
+                        Response.StatusCode = 403;
+                        return;
+                    }
+                    else if((int)authTable.Rows[0]["tipoAgenteID"] != 1){
+                        Response.StatusCode = 403;
+                        return;
+                    }
+                    else{
+                        using(SqlCommand changeInfoCommand = new SqlCommand()){
+                        List<string> updateCommands = new List<string>();
+                        if(new_info.Nome != null){
+                            updateCommands.Add("SET tbClienteOnline.clienteOnlineNome = @nome");
+                            changeInfoCommand.Parameters.Add(new SqlParameter("@nome", new_info.Nome));
+                        }
+                        if(new_info.Sobrenome != null){
+                            updateCommands.Add("SET tbClienteOnline.clienteOnlineSobrenome = @sbnome");
+                            changeInfoCommand.Parameters.Add(new SqlParameter("@sbnome", new_info.Sobrenome));
+                        }
+                        if(new_info.Password != null){
+                            updateCommands.Add("SET tbAgente.agenteSenha = @pass");
+                            changeInfoCommand.Parameters.Add(new SqlParameter("@pass", PasswordHasher.Hash(new_info.Password, authTable.Rows[0]["agenteSalt"].ToString())));
+                        }
+                        changeInfoCommand.Parameters.Add(new SqlParameter("@id", id));
+                        changeInfoCommand.CommandText = $"UPDATE tbClienteOnline {String.Join(",",updateCommands.ToArray())} FROM tbClienteOnline INNER JOIN on tbAgente ON tbAgente.agenteID = tbClienteOnline.agenteID WHERE tbClienteOnline.agenteID = @id";
+                        changeInfoCommand.Connection = connection;
+                        changeInfoCommand.ExecuteNonQuery();
+                        }
+                    }
+                }
+            }
+        }
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
         public void Delete(int id)
