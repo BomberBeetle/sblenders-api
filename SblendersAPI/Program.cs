@@ -14,6 +14,7 @@ namespace SblendersAPI
     {
         public static string dbPass = "12345";
         //public static string dbPass = "Abc12345";
+        //public static string dbPass = "gallelli";
         public static string dbLogin = "sa";
         public static string hashSalt = "зձʨC1ӂݹ事䀹ۢ׶8ޮҪؒ㨄瀸긡Ő箙荈�!ǰᅠ캅B4䞅뽃`oʰ씸戠־nAᷙꐼTHźX6Â6Ӽ◑NDkayCMms¾놽";
         public static string dbEnv = Environment.MachineName;
