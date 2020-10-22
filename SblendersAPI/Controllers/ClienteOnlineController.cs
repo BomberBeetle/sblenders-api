@@ -233,22 +233,39 @@ namespace SblendersAPI.Controllers
                     else{
                         using(SqlCommand changeInfoCommand = new SqlCommand()){
                         List<string> updateCommands = new List<string>();
+                        bool updateData = false;
+                        bool updatePass = false;
                         if(new_info.Nome != null){
-                            updateCommands.Add("SET tbClienteOnline.clienteOnlineNome = @nome");
+                            updateData = true;
+                            updateCommands.Add("SET clienteOnlineNome = @nome");
                             changeInfoCommand.Parameters.Add(new SqlParameter("@nome", new_info.Nome));
                         }
                         if(new_info.Sobrenome != null){
+                            updateData = true;
                             updateCommands.Add("SET tbClienteOnline.clienteOnlineSobrenome = @sbnome");
                             changeInfoCommand.Parameters.Add(new SqlParameter("@sbnome", new_info.Sobrenome));
                         }
                         if(new_info.Password != null){
-                            updateCommands.Add("SET tbAgente.agenteSenha = @pass");
+                            updatePass = true;
                             changeInfoCommand.Parameters.Add(new SqlParameter("@pass", PasswordHasher.Hash(new_info.Password, authTable.Rows[0]["agenteSalt"].ToString())));
                         }
                         changeInfoCommand.Parameters.Add(new SqlParameter("@id", id));
-                        changeInfoCommand.CommandText = $"UPDATE tbClienteOnline {String.Join(",",updateCommands.ToArray())} FROM tbClienteOnline INNER JOIN on tbAgente ON tbAgente.agenteID = tbClienteOnline.agenteID WHERE tbClienteOnline.agenteID = @id";
+                        
                         changeInfoCommand.Connection = connection;
+                        
+                        if(updateData){
+                            connection.Open();
+                        changeInfoCommand.CommandText = $"UPDATE tbClienteOnline {String.Join(",",updateCommands.ToArray())} WHERE agenteID = @id";
                         changeInfoCommand.ExecuteNonQuery();
+                        connection.Close();
+                        }
+                        if(updatePass){
+                        connection.Open();
+                        changeInfoCommand.CommandText = $"UPDATE tbAgente SET agenteSenha=@pass WHERE agenteID = @id";
+                        changeInfoCommand.ExecuteNonQuery();
+                        connection.Close();
+                        }
+                        connection.Close();
                         }
                     }
                 }

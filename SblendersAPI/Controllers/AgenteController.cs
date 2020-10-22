@@ -97,7 +97,7 @@ namespace SblendersAPI.Controllers
                         }
                     }
                 }
-                catch(Exception e)
+                catch
                 {
                     Response.StatusCode = StatusCodes.Status403Forbidden;
                     return new Dictionary<string, string> { { "error", "AUTH_ERROR" }};
