@@ -237,12 +237,12 @@ namespace SblendersAPI.Controllers
                         bool updatePass = false;
                         if(new_info.Nome != null){
                             updateData = true;
-                            updateCommands.Add("SET clienteOnlineNome = @nome");
+                            updateCommands.Add("clienteOnlineNome = @nome");
                             changeInfoCommand.Parameters.Add(new SqlParameter("@nome", new_info.Nome));
                         }
                         if(new_info.Sobrenome != null){
                             updateData = true;
-                            updateCommands.Add("SET tbClienteOnline.clienteOnlineSobrenome = @sbnome");
+                            updateCommands.Add("tbClienteOnline.clienteOnlineSobrenome = @sbnome");
                             changeInfoCommand.Parameters.Add(new SqlParameter("@sbnome", new_info.Sobrenome));
                         }
                         if(new_info.Password != null){
@@ -255,7 +255,7 @@ namespace SblendersAPI.Controllers
                         
                         if(updateData){
                             connection.Open();
-                        changeInfoCommand.CommandText = $"UPDATE tbClienteOnline {String.Join(",",updateCommands.ToArray())} WHERE agenteID = @id";
+                        changeInfoCommand.CommandText = $"UPDATE tbClienteOnline SET {String.Join(",",updateCommands.ToArray())} WHERE agenteID = @id";
                         changeInfoCommand.ExecuteNonQuery();
                         connection.Close();
                         }
