@@ -261,6 +261,7 @@ namespace SblendersAPI.Controllers
             SqlConnection connection = new SqlConnection(string.Format("User ID={0}; Password={1}; Initial Catalog={2}; Persist Security Info=True;Data Source={3}", Program.dbLogin, Program.dbPass, "dbSblenders", Program.dbEnv))
             )
             {
+                int? tipoAgenteID;
                 connection.Open();
                 using (
                     SqlCommand agenteQueryCommand = new SqlCommand("SELECT tipoAgenteID FROM tbAgente WHERE agenteToken = @token AND agenteID = @id ;", connection)
@@ -268,8 +269,8 @@ namespace SblendersAPI.Controllers
                 {
                     agenteQueryCommand.Parameters.Add(new SqlParameter("@token", Request.Headers["Authorization"].ToString()));
                     agenteQueryCommand.Parameters.Add(new SqlParameter("@id", agenteID));
-                    int? tipoAgenteID = (int?)agenteQueryCommand.ExecuteScalar();
-                    if(tipoAgenteID != 2 || tipoAgenteID == null)
+                     tipoAgenteID = (int?)agenteQueryCommand.ExecuteScalar();
+                    if(tipoAgenteID != 2 || tipoAgenteID != 1 || tipoAgenteID == null)
                     {
                         Response.StatusCode = StatusCodes.Status403Forbidden;
                         return;
@@ -279,6 +280,10 @@ namespace SblendersAPI.Controllers
                     SqlCommand updatePedidoCommand = new SqlCommand("UPDATE tbPedido SET estadoPedidoID = @estadoID WHERE pedidoID=@pedidoID", connection)
                     )
                 {
+                    if(tipoAgenteID == 1 || estadoID != 6){
+                        Response.StatusCode = StatusCodes.Status403Forbidden;
+                        return;
+                    }
                     updatePedidoCommand.Parameters.Add(new SqlParameter("@estadoID", estadoID));
                     updatePedidoCommand.Parameters.Add(new SqlParameter("@pedidoID", pedidoID));
                     if(updatePedidoCommand.ExecuteNonQuery() < 1)
