@@ -280,7 +280,7 @@ namespace SblendersAPI.Controllers
                     SqlCommand updatePedidoCommand = new SqlCommand("UPDATE tbPedido SET estadoPedidoID = @estadoID WHERE pedidoID=@pedidoID", connection)
                     )
                 {
-                    if(tipoAgenteID == 1 || estadoID != 6){
+                    if(tipoAgenteID == 1 && estadoID != 6){
                         Response.StatusCode = StatusCodes.Status403Forbidden;
                         return;
                     }
