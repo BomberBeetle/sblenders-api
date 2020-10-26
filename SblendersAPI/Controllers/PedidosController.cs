@@ -270,7 +270,7 @@ namespace SblendersAPI.Controllers
                     agenteQueryCommand.Parameters.Add(new SqlParameter("@token", Request.Headers["Authorization"].ToString()));
                     agenteQueryCommand.Parameters.Add(new SqlParameter("@id", agenteID));
                      tipoAgenteID = (int?)agenteQueryCommand.ExecuteScalar();
-                    if(tipoAgenteID != 2 || tipoAgenteID != 1 || tipoAgenteID == null)
+                    if((tipoAgenteID != 2 && tipoAgenteID != 1) || tipoAgenteID == null)
                     {
                         Response.StatusCode = StatusCodes.Status403Forbidden;
                         return;
