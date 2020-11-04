@@ -12,7 +12,7 @@ namespace SblendersAPI
 {
     public class Program
     {
-        public static string dbPass = "12345";
+        public static string dbPass = "Abc12345";
         //public static string dbPass = "Abc12345";
         //public static string dbPass = "gallelli";
         public static string dbLogin = "sa";

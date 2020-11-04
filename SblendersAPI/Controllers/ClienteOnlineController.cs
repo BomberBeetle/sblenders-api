@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net;
+using System.Net.Mail;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using SblendersAPI.Models;
 using SblendersAPI.Utils;
 
@@ -191,7 +189,22 @@ namespace SblendersAPI.Controllers
                             }
                             else
                             {
-                                //mandar email aqui
+                                //mandar email aqui sblenders.fast.food@gmail.com wbBA6rgyGLQ5dPZ
+                                 string htmlString = string.Format("<h1>Clique neste link para verificar sua conta, {0}:</h1><br/><a href='http://siteDoQuiz.tk/Verifica.aspx?token={1}'>Verificar Conta</a><br/>Esta é uma mensagem automática. Não responda.", newClient.Nome, url);
+                                MailMessage message = new MailMessage();
+                                SmtpClient smtp = new SmtpClient();
+                                message.From = new MailAddress("etespquiz@gmail.com");
+                                message.To.Add(new MailAddress(newClient.Login));
+                                message.Subject = "Verifique sua conta de participante do Etesp Quiz";
+                                message.IsBodyHtml = true;
+                                message.Body = htmlString;
+                                smtp.Port = 587;
+                                smtp.Host = "smtp.gmail.com";
+                                smtp.EnableSsl = true;
+                                smtp.UseDefaultCredentials = false;
+                                smtp.Credentials = new NetworkCredential("sblenders.fast.food@gmail.com", "wbBA6rgyGLQ5dPZ");
+                                smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                                smtp.Send(message);
                                 return new Dictionary<string, object> { { "message", "SUCCESS" } };
                             }
                         }
