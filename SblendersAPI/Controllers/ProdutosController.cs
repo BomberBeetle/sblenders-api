@@ -168,7 +168,7 @@ namespace SblendersAPI.Controllers
                                         nutriAdapter.Fill(nutriInfoTable);
                                         
                                         foreach(DataRow r in nutriInfoTable.Rows){
-                                            nutriInfo.Add(new Produto.InformacaoNutricional((string)r["tbInformacaoNutricionalTipo.informacaoNutriTipoDescricao"],(int)r["informacaoNutricionalValor"]));
+                                            nutriInfo.Add(new Produto.InformacaoNutricional((string)r["informacaoNutriTipoDescricao"],(int)r["informacaoNutricionalValor"]));
                                         }
                                      }
 
