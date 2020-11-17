@@ -193,9 +193,9 @@ namespace SblendersAPI.Controllers
                                  string htmlString = string.Format("<h1>Clique neste link para verificar sua conta, {0}:</h1><br/><a href='http://localhost:49926/LandingVerification.aspx?target={1}&vu={2}'>Verificar Conta</a><br/>Esta é uma mensagem automática. Não responda.", newClient.Nome,agentID, url);
                                 MailMessage message = new MailMessage();
                                 SmtpClient smtp = new SmtpClient();
-                                message.From = new MailAddress("sblenders.fast.foodz@gmail.com");
+                                message.From = new MailAddress("sblenders.fast.food@gmail.com");
                                 message.To.Add(new MailAddress(newClient.Login));
-                                message.Subject = "Verifique sua conta de participante do Etesp Quiz";
+                                message.Subject = "Verifique sua conta SBLENDERS";
                                 message.IsBodyHtml = true;
                                 message.Body = htmlString;
                                 smtp.Port = 587;
