@@ -28,9 +28,18 @@ namespace SblendersAPI.Controllers
             {
                 connection.Open();
                 selectProductPhotoCommand.Parameters.Add(new SqlParameter("@id", id));
-                byte[] photoFile = (byte[])selectProductPhotoCommand.ExecuteScalar();
                 
-                return File(photoFile, "image/jpg");
+                object photoFile = selectProductPhotoCommand.ExecuteScalar();
+                if(photoFile != DBNull.Value)
+                {
+                    return File((byte[])photoFile, "image/jpg");
+                }
+                else
+                {
+                    return null;
+                }
+                
+                
             }
         }
 
