@@ -296,7 +296,7 @@ namespace SblendersAPI.Controllers
 
         // PUT: api/Pedidos/5
         [HttpPut]
-        public void Put([FromBody] Pedido pedido)
+        public int Put([FromBody] Pedido pedido)
         {
             DataTable agentData = new DataTable();
             int? pedidoID = null;
@@ -316,7 +316,7 @@ namespace SblendersAPI.Controllers
                     if(agentType == null)
                     {
                         Response.StatusCode = StatusCodes.Status403Forbidden;
-                        return;
+                        return 0;
                     }
                 }
                 
@@ -332,7 +332,7 @@ namespace SblendersAPI.Controllers
                     pedidoID = (int?)insertPedidoCommand.ExecuteScalar();
                         if(pedidoID == null) {
                             Response.StatusCode = StatusCodes.Status500InternalServerError;
-                            return;
+                            return 0;
                         }
                     }
                 try
@@ -362,10 +362,12 @@ namespace SblendersAPI.Controllers
                             }
                         }
                     }
+                    return pedidoID.GetValueOrDefault();
                 }
                 catch
                 {
                     RevertPedido(pedidoID.Value);
+                    return 0;
                 }
             }
         }
